@@ -406,3 +406,30 @@
 .marketingPlan .marketingPlanRight .marketingPlanRightBox .jsPlumbBox .jsPlumbIcon.report.realtimeActivity::before {
   content: "\e604";
 }
+.marketingPlan .marketingPlanRight .marketingPlanRightBox .jsPlumbBox .jsPlumbIcon::after {
+  position: absolute;
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  content: "";
+  background: #fff;
+  font-family: "iconfont";
+  right: -8px;
+  bottom: -8px;
+  line-height: 20px;
+  font-size: 20px;
+  text-align: left;
+  transform: scale(0.75);
+  visibility: hidden;
+}
+.marketingPlan .marketingPlanRight .marketingPlanRightBox .jsPlumbBox .jsPlumbIcon.taskIdOk::after {
+  color: #32c300;
+  content: "\e625";
+  visibility: visible;
+}
+.marketingPlan .marketingPlanRight .marketingPlanRightBox .jsPlumbBox .jsPlumbIcon.taskIdNo::after {
+  /* color: #f90;
+						content: "\e627";
+						visibility: visible; */
+}

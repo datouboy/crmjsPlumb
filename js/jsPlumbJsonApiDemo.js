@@ -48,7 +48,7 @@
 		},
 		{
 			"ID" : "jsPlumb_5",
-			"taskID" : "123123",
+			"taskID" : false,
 			"type" : "split",
 			"text" : "text5",
 			"targetId" : false,
@@ -57,7 +57,7 @@
 		},
 		{
 			"ID" : "jsPlumb_6",
-			"taskID" : "123123",
+			"taskID" : false,
 			"type" : "merge",
 			"text" : "text6",
 			"targetId" : false,

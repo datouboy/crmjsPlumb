@@ -171,7 +171,8 @@ AlexJsPlumb.prototype = {
 						var clientObj = {
 							clientX: e.clientX - $(this.jsPlumbBox).offset().left - 25,
 							clientY: e.clientY - $(this.jsPlumbBox).offset().top - 25,
-							type: $("#iconMove").attr("data-type")
+							type: $("#iconMove").attr("data-type"),
+							text: $("#iconMove").text()
 						}
 						_slef.addNewJsPlumbIcon(clientObj);
 					}
@@ -290,10 +291,10 @@ AlexJsPlumb.prototype = {
 			var jsPlumbObj = this.jsPlumbJson[i];
 		}else{//新加Icon
 			var jsPlumbObj = {
-				"ID" : "jsPlumb_"+i,
-				"taskID" : null,
+				"ID" : "jsPlumb_"+new Date().getTime(),
+				"taskID" : false,
 				"type" : clientObj.type,
-				"text" : "开始任务",
+				"text" : clientObj.text,
 				"targetId" : false,
 				"left": clientObj.clientX + $(window).scrollLeft(),
 				"top": clientObj.clientY + $(window).scrollTop()
@@ -305,7 +306,12 @@ AlexJsPlumb.prototype = {
 	    //console.log(name);
 
 	    //在div内append元素
-	    $(this.jsPlumbBox).append("<div class=\"jsPlumbIcon " + this.iconTypeToClass[jsPlumbObj.type] + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name+"\" id=\""+chartID+"\" data-type=\"" + jsPlumbObj.type + "\" data-taskID=\"" + jsPlumbObj.taskID + "\"><h5>" + jsPlumbObj.text + "</h5></div>");
+	    if(!jsPlumbObj.taskID){
+	    	var taskIDClass = "taskIdNo ";
+	    }else{
+	    	var taskIDClass = "taskIdOk ";
+	    }
+	    $(this.jsPlumbBox).append("<div class=\"jsPlumbIcon " + taskIDClass + this.iconTypeToClass[jsPlumbObj.type] + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name+"\" id=\""+chartID+"\" data-type=\"" + jsPlumbObj.type + "\" data-taskID=\"" + jsPlumbObj.taskID + "\"><h5>" + jsPlumbObj.text + "</h5></div>");
 	    $("#"+chartID).css("left",jsPlumbObj.left).css("top",jsPlumbObj.top).css("position","absolute").css("margin","0px");
 
 	    instance.draggable(chartID);
