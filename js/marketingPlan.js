@@ -21,6 +21,8 @@ AlexJsPlumb.prototype = {
 		this.userID = obj.userID;
 		//获取jsPlumb初始化Json数据的API
 		this.jsPlumbJsonApi = obj.jsPlumbJsonApi;
+		//添加新Icon（节点）的API
+		this.addIconApi = obj.addIconApi;
 		//jsPlumbBox容器
 		this.jsPlumbBox = $("#jsPlumbBox");
 		//连接线数组（用于删除连接线）
@@ -166,8 +168,7 @@ AlexJsPlumb.prototype = {
 				//拖动Icon边界碰撞检测
 				if(e.clientX > _slef.jsPlumbBoxBorders.left && e.clientX < _slef.jsPlumbBoxBorders.right){
 					if(e.clientY > _slef.jsPlumbBoxBorders.top && e.clientY < _slef.jsPlumbBoxBorders.bottom){
-						console.log(e.clientX, e.clientY);
-						//_slef.jsPlumbInit();
+						//console.log(e.clientX, e.clientY);
 						var clientObj = {
 							clientX: e.clientX - $(this.jsPlumbBox).offset().left - 25,
 							clientY: e.clientY - $(this.jsPlumbBox).offset().top - 25,
@@ -185,6 +186,7 @@ AlexJsPlumb.prototype = {
 			$('#leftIconCopy').html("");
 		})
 	},
+	//Ajax获取初始化数据后初始化jsPlumb
 	jsPlumbInit: function(){
 		this.removeAllJsPlumb();
 		var _slef = this;
@@ -203,11 +205,13 @@ AlexJsPlumb.prototype = {
 					_slef.jsPlumbJson = msg.list;
 					_slef.jsPlumbInstance();
 				}else{
-					console.log("API 返回错误信息！");
+					console.log("初始化加载失败，API 返回错误信息！");
+					alert("初始化加载失败，API 返回错误信息！");
 				}
 			}
 		});
 	},
+	//初始化jsPlumb
 	jsPlumbInstance: function(){
 		if(this.instanceArray.length > 0){
 			this.instanceArray[this.instanceArray.length-1] == null;
@@ -238,6 +242,8 @@ AlexJsPlumb.prototype = {
 		this.targetSourceArray = [];
 		for(var i=0; i<this.jsPlumbJson.length; i++){
 			this.addNewChart(instance, i);
+			//添加节点Icon事件绑定
+			this.addJsPlumbIconBind($("#"+this.jsPlumbJson[i].ID));
 		}
 
 		//添加连接线
@@ -251,13 +257,61 @@ AlexJsPlumb.prototype = {
 		//添加JsPlumb绑定事件
 		this.addJsPlumbBind(instance);
 	},
-	addNewJsPlumbIcon : function(clientObj){
+	addNewJsPlumbIcon : function(clientObj){//添加新sPlumb Icon
+		var _slef = this;
+		var num = this.jsPlumbJson.length
 		//添加新Icon
-		this.addNewChart(this.instanceArray[this.instanceArray.length-1], this.jsPlumbJson.length, clientObj);
+		this.addNewChart(this.instanceArray[this.instanceArray.length-1], num, clientObj);
+		//这里的num，经过addNewChart之后数字会加1，所以下面的num不用-1了
 		//删除绑定事件
 		this.instanceArray[this.instanceArray.length-1].unbind();
 		//添加JsPlumb绑定事件
 		this.addJsPlumbBind(this.instanceArray[this.instanceArray.length-1]);
+		//添加节点Icon事件绑定
+		this.addJsPlumbIconBind($("#"+this.jsPlumbJson[num].ID));
+		/*
+		 * 添加新Icon后，向API接口添加新Icon数据
+		 * API获取新节点Icon数据后，返回taskID（此节点的任务ID）
+		 * 将taskID更新至jsPlumbJson数组及页面Dom元素上
+		 */
+		$.ajax({
+			type: "POST",
+			url: this.addIconApi,
+			data: {
+				'taskID':this.taskID,//在线营销任务ID
+				'userID':this.userID,//用户ID
+				"icon_ID" : this.jsPlumbJson[num].ID,//节点IconID
+				"icon_type" : this.jsPlumbJson[num].type,
+				"icon_text" : this.jsPlumbJson[num].text,
+				"icon_left": this.jsPlumbJson[num].left,
+				"icon_top": this.jsPlumbJson[num].top
+			},
+			dataType: "json",
+			timeout: 20000,//20秒
+			error: function(XMLHttpRequest, textStatus, errorThrown){
+				alert('ajax通信出错');
+			}, 
+			success: function(msg){
+				if(msg.result){
+					_slef.jsPlumbJson[num].taskID = msg.icon.taskID;
+					$("#"+_slef.jsPlumbJson[num].ID).attr({"data-taskid":_slef.jsPlumbJson[num].taskID});
+					console.log("添加新节点:", _slef.jsPlumbJson[num].text, "taskID:", _slef.jsPlumbJson[num].taskID);
+				}else{
+					console.log("添加新节点失败，API 返回错误信息！");
+					alert("添加新节点失败，API 返回错误信息！");
+				}
+			}
+		});
+	},
+	//添加节点Icon事件绑定
+	addJsPlumbIconBind : function(ID){
+		var _slef = this;
+		//console.log("#"+this.jsPlumbJson[num].ID);
+		//绑定节点Icon双击事件
+		$(ID).dblclick(function(){
+			console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
+			$("#myModal").modal('show');
+		});
 	},
 	addJsPlumbBind : function(instance){//添加JsPlumb绑定事件
 		//连接线点击事件绑定
@@ -305,13 +359,7 @@ AlexJsPlumb.prototype = {
 		var name = chartID;
 	    //console.log(name);
 
-	    //在div内append元素
-	    if(!jsPlumbObj.taskID){
-	    	var taskIDClass = "taskIdNo ";
-	    }else{
-	    	var taskIDClass = "taskIdOk ";
-	    }
-	    $(this.jsPlumbBox).append("<div class=\"jsPlumbIcon " + taskIDClass + this.iconTypeToClass[jsPlumbObj.type] + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name+"\" id=\""+chartID+"\" data-type=\"" + jsPlumbObj.type + "\" data-taskID=\"" + jsPlumbObj.taskID + "\"><h5>" + jsPlumbObj.text + "</h5></div>");
+	    $(this.jsPlumbBox).append("<div class=\"jsPlumbIcon " + this.iconTypeToClass[jsPlumbObj.type] + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name+"\" id=\""+chartID+"\" data-type=\"" + jsPlumbObj.type + "\" data-taskID=\"" + jsPlumbObj.taskID + "\"><h5>" + jsPlumbObj.text + "</h5></div>");
 	    $("#"+chartID).css("left",jsPlumbObj.left).css("top",jsPlumbObj.top).css("position","absolute").css("margin","0px");
 
 	    instance.draggable(chartID);
