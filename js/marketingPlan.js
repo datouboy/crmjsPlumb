@@ -144,7 +144,7 @@ AlexJsPlumb.prototype = {
 				clientX: e.clientX,
 				clientY: e.clientY
 			}
-			var html = "<div id=\"iconMove\" class=\"" + $(this).attr("class") + "\" style=\"" + top+left + "\">"+ $(this).text(); +"</div>";
+			var html = "<div id=\"iconMove\" class=\"" + $(this).attr("class") + "\" style=\"" + top+left + "\" data-type=\"" + $(this).attr("data-type") + "\">"+ $(this).text(); +"</div>";
 			$('#leftIconCopy').html(html);
 		})
 		$(window).mousemove(function(e){
@@ -167,7 +167,13 @@ AlexJsPlumb.prototype = {
 				if(e.clientX > _slef.jsPlumbBoxBorders.left && e.clientX < _slef.jsPlumbBoxBorders.right){
 					if(e.clientY > _slef.jsPlumbBoxBorders.top && e.clientY < _slef.jsPlumbBoxBorders.bottom){
 						console.log(e.clientX, e.clientY);
-						_slef.jsPlumbInit();
+						//_slef.jsPlumbInit();
+						var clientObj = {
+							clientX: e.clientX - $(this.jsPlumbBox).offset().left - 25,
+							clientY: e.clientY - $(this.jsPlumbBox).offset().top - 25,
+							type: $("#iconMove").attr("data-type")
+						}
+						_slef.addNewJsPlumbIcon(clientObj);
 					}
 				}
 			}
@@ -224,15 +230,16 @@ AlexJsPlumb.prototype = {
 		    ],
 		    Container: "jsPlumbBox"
 		}))
-
 		var instance = this.instanceArray[this.instanceArray.length-1];
 
+		//添加Icon
 		this.endpointSourceArray = [];
 		this.targetSourceArray = [];
 		for(var i=0; i<this.jsPlumbJson.length; i++){
 			this.addNewChart(instance, i);
 		}
 
+		//添加连接线
 		this.connectArray = [];
 		for(var i=0; i<this.jsPlumbJson.length; i++){
 			if(this.jsPlumbJson[i].targetId){
@@ -240,7 +247,18 @@ AlexJsPlumb.prototype = {
 				this.connectArray[i] = instance.connect({uuids: [this.jsPlumbJson[i].ID+"RightMiddle", this.jsPlumbJson[i].targetId+"LeftMiddle"], editable: true});
 			}
 		}
-
+		//添加JsPlumb绑定事件
+		this.addJsPlumbBind(instance);
+	},
+	addNewJsPlumbIcon : function(clientObj){
+		//添加新Icon
+		this.addNewChart(this.instanceArray[this.instanceArray.length-1], this.jsPlumbJson.length, clientObj);
+		//删除绑定事件
+		this.instanceArray[this.instanceArray.length-1].unbind();
+		//添加JsPlumb绑定事件
+		this.addJsPlumbBind(this.instanceArray[this.instanceArray.length-1]);
+	},
+	addJsPlumbBind : function(instance){//添加JsPlumb绑定事件
 		//连接线点击事件绑定
 		instance.bind("click", function (conn, originalEvent) {
 		    console.log("click");
@@ -266,12 +284,24 @@ AlexJsPlumb.prototype = {
 			console.log("connection " + params.connection.id + " was moved");
 		});
 	},
-	addNewChart: function (instance, i, jsPlumbJson){
+	addNewChart: function (instance, i, clientObj){
 		var _slef = this;
-		var jsPlumbObj = this.jsPlumbJson[i];
-
+		if(i < this.jsPlumbJson.length){//原初始化数据
+			var jsPlumbObj = this.jsPlumbJson[i];
+		}else{//新加Icon
+			var jsPlumbObj = {
+				"ID" : "jsPlumb_"+i,
+				"taskID" : null,
+				"type" : clientObj.type,
+				"text" : "开始任务",
+				"targetId" : false,
+				"left": clientObj.clientX + $(window).scrollLeft(),
+				"top": clientObj.clientY + $(window).scrollTop()
+			}
+			this.jsPlumbJson.push(jsPlumbObj);
+		}
 		var chartID = jsPlumbObj.ID;
-	    var name = chartID;
+		var name = chartID;
 	    //console.log(name);
 
 	    //在div内append元素
@@ -299,16 +329,20 @@ AlexJsPlumb.prototype = {
 	},
 	//删除jsPlumb实例
 	removeAllJsPlumb : function(){
-		//删除连接线
-		for(var i=0; i<this.connectArray.length; i++){
-			jsPlumb.detach(this.connectArray[i]);
+		if(this.instanceArray.length > 0){
+			//删除连接线
+			for(var i=0; i<this.connectArray.length; i++){
+				jsPlumb.detach(this.connectArray[i]);
+			}
+			//删除端点
+			for(var i=0; i<this.endpointSourceArray.length; i++){
+				jsPlumb.deleteEndpoint(this.endpointSourceArray[i]);
+				jsPlumb.deleteEndpoint(this.targetSourceArray[i]);
+			}
+			//删除绑定事件
+			this.instanceArray[this.instanceArray.length-1].unbind();
+			$(this.jsPlumbBox).html("");
 		}
-		//删除端点
-		for(var i=0; i<this.endpointSourceArray.length; i++){
-			jsPlumb.deleteEndpoint(this.endpointSourceArray[i]);
-			jsPlumb.deleteEndpoint(this.targetSourceArray[i]);
-		}
-		$(this.jsPlumbBox).html("");
 	},
 	//初始化Icon类型对应Class查询数组
 	iconTypeToClassFun : function(){
