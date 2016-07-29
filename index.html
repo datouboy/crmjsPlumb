@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="./css/marketingplan.css">
+	<script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/jsPlumb-2.1.4-min.js"></script>
+	<script type="text/javascript" src="./js/marketingPlanIconJson.js"></script>
+	<script type="text/javascript" src="./js/marketingPlan.js"></script>
+</head>
+<body>
+<div class="marketingPlan">
+	<div class="marketingPlanLeft">
+		<div class="marketingBoxTopTitleBox">
+			设计工具（拖拽图标至右侧）
+		</div>
+		<div class="marketingPlanIconBox" id="marketingPlanIconBox">
+		</div>
+	</div>
+	<div class="marketingPlanRight">
+		<div class="marketingPlanRightBox">
+			<div class="marketingBoxTopTitleBox">
+			</div>
+			<div class="jsPlumbBox" id="jsPlumbBox">
+			</div>
+		</div>
+	</div>
+</div>
+<script language="javascript" type="text/javascript">
+var jsPlumbObjJson = {
+	taskID : 123,
+	userID : 123,
+	jsPlumbJsonApi : "./js/jsPlumbJsonApiDemo.js"
+}
+var marketingPlan = new AlexJsPlumb(jsPlumbObjJson);
+</script>
+</body>
+</html>
