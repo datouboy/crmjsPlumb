@@ -23,6 +23,8 @@ AlexJsPlumb.prototype = {
 		this.jsPlumbJsonApi = obj.jsPlumbJsonApi;
 		//添加新Icon（节点）的API
 		this.addIconApi = obj.addIconApi;
+		//删除Icon（节点）的API
+		this.delIconApi = obj.delIconApi;
 		//jsPlumbBox容器
 		this.jsPlumbBox = $("#jsPlumbBox");
 		//连接线数组（用于删除连接线）
@@ -32,6 +34,8 @@ AlexJsPlumb.prototype = {
 		this.targetSourceArray = new Array();
 		//存放初始化jsPlumb实例
 		this.instanceArray = new Array();
+		//记录节点Icon对应的连接端点数组编号
+		this.iconSourceArray = new Array();
 		
 		// 连接线样式配置
 		var connectorPaintStyle = {
@@ -128,8 +132,52 @@ AlexJsPlumb.prototype = {
 		}
 		this.addLeftIconCopy();
 	},
-	addLeftIconCopy : function(){//添加用于拖动的li Copy
+	addLeftIconCopy : function(){
+		//添加用于拖动的li Copy
 		$("body").prepend("<div class=\"leftIconCopy\" id=\"leftIconCopy\"></div>");
+		//添加节点Icon右键删除菜单
+		$("body").prepend("<div class=\"nodeIconDelMenuBox\" id=\"nodeIconDelMenuBox\"><div class=\"nodeIconDelMenu\" id=\"nodeIconDelMenu\"><div class=\"delIcon\">删除</div></div></div>");
+		$("#nodeIconDelMenu").bind('contextmenu', function(e) {
+			return false;
+	    });
+	    this.delIconBind();
+	},
+	//delIcon 右键删除节点Icon事件绑定
+	delIconBind : function(){
+		var _slef = this;
+		$("#nodeIconDelMenu .delIcon").click(function(){
+			/*
+			 * 节点Icon删除流程说明：
+			 * 1，向服务器提交删除节点ID
+			 * 2，服务器反馈成功信息后，删除jsPlumbJson数组中对应数据
+			 * 3，删除页面Dom相关元素
+			 */
+			$.ajax({
+				type: "POST",
+				url: _slef.delIconApi+"?timeStamp=" + new Date().getTime(),
+				data: {
+						taskID: _slef.taskID,
+						userID: _slef.userID,
+						icon_taskID: $(this).attr("data-taskid")
+					},
+				dataType: "json",
+				//async: false,
+				timeout: 20000,//20秒
+				success: function(msg){
+					if(msg.result){
+						//删除页面Dom相关元素
+						_slef.removeJsPlumbIcon($(this).attr("data-id"),$(this).attr("data-taskid"));
+					}else{
+						console.log("节点删除失败，API 返回错误信息！");
+						alert("节点删除失败，API 返回错误信息！");
+					}
+				}.bind(this),
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					alert('ajax通信出错');
+				}
+			});
+			
+		})
 	},
 	addLeftIconEvent : function(){//绑定左侧菜单拖动事件
 		var _slef = this;
@@ -184,6 +232,8 @@ AlexJsPlumb.prototype = {
 			_slef.leftIconOffset = false;
 			_slef.mousedownClient = false;
 			$('#leftIconCopy').html("");
+
+			$("#nodeIconDelMenu").hide();
 		})
 	},
 	//Ajax获取初始化数据后初始化jsPlumb
@@ -193,13 +243,14 @@ AlexJsPlumb.prototype = {
 		//获取初始化Json数据
 		$.ajax({
 			type: "POST",
-			url: this.jsPlumbJsonApi,
-			data: {'taskID':this.taskID, 'userID':this.userID},
+			url: this.jsPlumbJsonApi+"?timeStamp=" + new Date().getTime(),
+			data: {
+					taskID: this.taskID,
+					userID: this.userID
+				},
 			dataType: "json",
+			//async: false,
 			timeout: 20000,//20秒
-			error: function(XMLHttpRequest, textStatus, errorThrown){
-				alert('ajax通信出错');
-			}, 
 			success: function(msg){
 				if(msg.result){
 					_slef.jsPlumbJson = msg.list;
@@ -208,6 +259,9 @@ AlexJsPlumb.prototype = {
 					console.log("初始化加载失败，API 返回错误信息！");
 					alert("初始化加载失败，API 返回错误信息！");
 				}
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown){
+				alert('ajax通信出错');
 			}
 		});
 	},
@@ -276,7 +330,7 @@ AlexJsPlumb.prototype = {
 		 */
 		$.ajax({
 			type: "POST",
-			url: this.addIconApi,
+			url: this.addIconApi+"?timeStamp=" + new Date().getTime(),
 			data: {
 				'taskID':this.taskID,//在线营销任务ID
 				'userID':this.userID,//用户ID
@@ -287,10 +341,8 @@ AlexJsPlumb.prototype = {
 				"icon_top": this.jsPlumbJson[num].top
 			},
 			dataType: "json",
+			//async: false,
 			timeout: 20000,//20秒
-			error: function(XMLHttpRequest, textStatus, errorThrown){
-				alert('ajax通信出错');
-			}, 
 			success: function(msg){
 				if(msg.result){
 					_slef.jsPlumbJson[num].taskID = msg.icon.taskID;
@@ -300,6 +352,9 @@ AlexJsPlumb.prototype = {
 					console.log("添加新节点失败，API 返回错误信息！");
 					alert("添加新节点失败，API 返回错误信息！");
 				}
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown){
+				alert('ajax通信出错');
 			}
 		});
 	},
@@ -308,10 +363,25 @@ AlexJsPlumb.prototype = {
 		var _slef = this;
 		//console.log("#"+this.jsPlumbJson[num].ID);
 		//绑定节点Icon双击事件
-		$(ID).dblclick(function(){
-			console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
+		$(ID).dblclick(function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
 			$("#myModal").modal('show');
-		});
+		})
+		$(ID).mouseup(function(e){
+			//e.which = 3 为鼠标右键事件
+			if(e.which == 3){
+				e.preventDefault();
+				e.stopPropagation();
+				$("#nodeIconDelMenu").show();
+				$("#nodeIconDelMenu").css({left:e.clientX + $(window).scrollLeft(), top:e.clientY + $(window).scrollTop()});
+				$("#nodeIconDelMenu .delIcon").attr({"data-id":$(this).attr("id"), "data-taskid":$(this).attr("data-taskid")});
+			}
+		})
+		$(ID).bind('contextmenu', function(e) {
+	      return false;
+	    });
 	},
 	addJsPlumbBind : function(instance){//添加JsPlumb绑定事件
 		//连接线点击事件绑定
@@ -359,29 +429,34 @@ AlexJsPlumb.prototype = {
 		var name = chartID;
 	    //console.log(name);
 
-	    $(this.jsPlumbBox).append("<div class=\"jsPlumbIcon " + this.iconTypeToClass[jsPlumbObj.type] + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name+"\" id=\""+chartID+"\" data-type=\"" + jsPlumbObj.type + "\" data-taskID=\"" + jsPlumbObj.taskID + "\"><h5>" + jsPlumbObj.text + "</h5></div>");
+	    var obj = {}
+	    obj.class = "jsPlumbIcon " + this.iconTypeToClass[jsPlumbObj.type] + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name;
+	    obj.id = chartID;
+	    obj.dataType = jsPlumbObj.type;
+	    obj.dataTaskID = jsPlumbObj.taskID;
+	    obj.text = jsPlumbObj.text;
+
+	    $(this.jsPlumbBox).append(this.substitute(this.iconTemplate,obj));
 	    $("#"+chartID).css("left",jsPlumbObj.left).css("top",jsPlumbObj.top).css("position","absolute").css("margin","0px");
 
 	    instance.draggable(chartID);
 	    instance.batch(function () {
-	        _slef._addEndpoints(instance, chartID, ["RightMiddle"], ["LeftMiddle"], i);
+	        _slef._addEndpoints(instance, chartID, "RightMiddle", "LeftMiddle", i);
 	    })
 	},
 	//添加jsPlumb块
 	_addEndpoints : function (instance, toId, sourceAnchors, targetAnchors, m) {
-	    for (var i = 0; i < sourceAnchors.length; i++) {
-	        var sourceUUID = toId + sourceAnchors[i];
-	        this.endpointSourceArray[m] = instance.addEndpoint(toId, this.sourceEndpoint, {
-	            anchor: sourceAnchors[i], uuid: sourceUUID
-	        });
-	    }
+        var sourceUUID = toId + sourceAnchors;
+        this.endpointSourceArray[m] = instance.addEndpoint(toId, this.sourceEndpoint, {
+            anchor: sourceAnchors, uuid: sourceUUID
+        });
 
-	    for (var j = 0; j < targetAnchors.length; j++) {
-	        var targetUUID = toId + targetAnchors[j];
-	        this.targetSourceArray[m] = instance.addEndpoint(toId, this.targetEndpoint, { anchor: targetAnchors[j], uuid: targetUUID });
-	    }
+        var targetUUID = toId + targetAnchors;
+        this.targetSourceArray[m] = instance.addEndpoint(toId, this.targetEndpoint, { anchor: targetAnchors, uuid: targetUUID });
+
+        this.iconSourceArray[toId] = m;
 	},
-	//删除jsPlumb实例
+	//清空画布jsPlumb实例
 	removeAllJsPlumb : function(){
 		if(this.instanceArray.length > 0){
 			//删除连接线
@@ -395,8 +470,17 @@ AlexJsPlumb.prototype = {
 			}
 			//删除绑定事件
 			this.instanceArray[this.instanceArray.length-1].unbind();
+			for(var i=0; i<this.jsPlumbJson.length; i++){
+				$("#"+this.jsPlumbJson[i].ID).unbind();
+			}
 			$(this.jsPlumbBox).html("");
 		}
+	},
+	//删除节点Icon
+	removeJsPlumbIcon : function(id,taskid){
+		jsPlumb.deleteEndpoint(this.endpointSourceArray[this.iconSourceArray[id]]);
+		jsPlumb.deleteEndpoint(this.targetSourceArray[this.iconSourceArray[id]]);
+		$("#"+id).remove();
 	},
 	//初始化Icon类型对应Class查询数组
 	iconTypeToClassFun : function(){
@@ -404,6 +488,21 @@ AlexJsPlumb.prototype = {
 			for(var j=0; j<marketingPlanIconJson[i].marketingFun.length; j++){
 				this.iconTypeToClass[marketingPlanIconJson[i].marketingFun[j].type] = marketingPlanIconJson[i].class + " " + marketingPlanIconJson[i].marketingFun[j].class;
 			}
+		}
+	},
+	isIE : function(){
+		if (navigator.userAgent.indexOf('Firefox') >= 0){
+			return true;
+		}else if(navigator.userAgent.indexOf('Chrome') >= 0){
+			return true;
+		}else if(navigator.userAgent.indexOf('Safari') >= 0){
+			return true;
+		}else if(navigator.userAgent.indexOf('Edge') >= 0){
+			return false;
+		}else if(navigator.userAgent.indexOf('MSIE') >= 0){
+			return false;
+		}else{
+			return false;
 		}
 	},
 	//模板内容替换函数
@@ -423,5 +522,11 @@ AlexJsPlumb.prototype = {
     ].join(""),
     marketingPlanIconTemplate_Li : [
         "<li class=\"{class}\" data-type=\"{type}\">{title}</li>",
+    ].join(""),
+    //节点Icon模版
+    iconTemplate : [
+    	"<div class=\"{class}\" id=\"{id}\" data-type=\"{dataType}\" data-taskID=\"{dataTaskID}\">",
+    		"<h5>{text}</h5>",
+    	"</div>"
     ].join("")
 }

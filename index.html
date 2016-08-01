@@ -22,8 +22,8 @@
 </head>
 <body>
 <!-- bootstrap 弹出框 -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
+<div id="myModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -61,7 +61,8 @@ var jsPlumbObjJson = {
 	taskID : 123,
 	userID : 123,
 	jsPlumbJsonApi : "./js/jsPlumbJsonApiDemo.js",
-	addIconApi : "./js/addIconApiDemo.js"
+	addIconApi : "./js/addIconApiDemo.js",
+	delIconApi : "./js/delIconApiDemo.js"
 }
 var marketingPlan = new AlexJsPlumb(jsPlumbObjJson);
 </script>
