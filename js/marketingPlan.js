@@ -171,11 +171,13 @@ AlexJsPlumb.prototype = {
 						for(var i=0; i<_slef.jsPlumbJson.length; i++){
 							if(_slef.jsPlumbJson[i].ID == $(this).attr("data-id")){
 								_slef.jsPlumbJson.splice(i,1);
+								break;
 							}
 						}
-						console.log(_slef.jsPlumbJson);
+						//console.log(_slef.jsPlumbJson);
 						//删除页面Dom相关元素
 						_slef.removeJsPlumbIcon($(this).attr("data-id"));
+						//console.log(_slef.jsPlumbJson);
 					}else{
 						console.log("节点删除失败，API 返回错误信息！");
 						alert("节点删除失败，API 返回错误信息！");
@@ -282,7 +284,7 @@ AlexJsPlumb.prototype = {
 		}
 		//初始化jsPlumb实例
 		this.instanceArray.push(jsPlumb.getInstance({
-		    DragOptions: { cursor: 'pointer', zIndex: 2000 },
+		    DragOptions: { cursor: 'pointer', zIndex: 200 },
 		    ConnectionOverlays: [//箭头样式配置
 		        [ "Arrow", {
 		        	width:8,
@@ -311,11 +313,15 @@ AlexJsPlumb.prototype = {
 		}
 
 		//添加连接线
+		var num = 0;
 		this.connectArray = [];
 		for(var i=0; i<this.jsPlumbJson.length; i++){
-			if(this.jsPlumbJson[i].targetId){
-				console.log(this.jsPlumbJson[i].ID+"RightMiddle", this.jsPlumbJson[i].targetId+"LeftMiddle");
-				this.connectArray[i] = instance.connect({uuids: [this.jsPlumbJson[i].ID+"RightMiddle", this.jsPlumbJson[i].targetId+"LeftMiddle"], editable: true});
+			if(this.jsPlumbJson[i].targetId.length > 0){
+				for(var j=0; j<this.jsPlumbJson[i].targetId.length; j++){
+					//console.log(this.jsPlumbJson[i].targetId.ID+"RightMiddle", this.jsPlumbJson[i].targetId+"LeftMiddle");
+					this.connectArray[num] = instance.connect({uuids: [this.jsPlumbJson[i].ID+"RightMiddle", this.jsPlumbJson[i].targetId[j]+"LeftMiddle"], editable: true});
+					num++;
+				}
 			}
 		}
 		//添加JsPlumb绑定事件
@@ -411,31 +417,88 @@ AlexJsPlumb.prototype = {
 
 		//监听新连接事件绑定
 		instance.bind("connection", function (connInfo, originalEvent) {
+			/*
+			 * 添加新连接线流程说明：
+			 * 1,前台新连接线事件触发后，添加连接线数据至connectArray，用于删除连接线
+			 * 2,更新jsPlumbJson中的对应连接线数据
+			 * 3,向API提交更新数据
+			 */
 		    //init(connInfo.connection);
-		    //console.log(connInfo.connection);
+		    var num;
 		    //添加对应新连接(用于删除连接)
 			_slef.connectArray.push(connInfo.connection);
+			//更新新连接线至jsPlumbJson
 		    for(var i=0; i<_slef.jsPlumbJson.length; i++){
 		    	if(_slef.jsPlumbJson[i].ID == connInfo.connection.sourceId){
-		    		_slef.jsPlumbJson[i].targetId = connInfo.connection.targetId;
+		    		_slef.jsPlumbJson[i].targetId.push(connInfo.connection.targetId);
+		    		num = i;
+		    		break;
 		    	}
 		    }
-		    console.log(_slef.jsPlumbJson);
+
+		    var data = {
+					'taskID':_slef.taskID,//在线营销任务ID
+					'userID':_slef.userID,//用户ID
+					"icon_ID" : _slef.jsPlumbJson[num].ID,//节点IconID
+					"icon_targetId" : _slef.jsPlumbJson[num].targetId
+				}
+		    _slef.editIconAjax(data,num);
+		    //console.log(connInfo.connection);
 		});
 
-		//出发端点触发
-		/*instance.bind("connectionDrag", function (connection) {
-			console.log(connection);
-		});*/
+		//连接线移除监听事件绑定
+		instance.bind("connectionDetached", function (conn) {
+		    //console.log(conn);
+		    _slef.delConnection(conn);
+		});
+	},
+	//删除连接线处理
+	delConnection : function(conn){
+		//console.log(conn);
+		//循环查找jsPlumbJson中对应的数据，删除对应数据
+		for(var i=0; i<this.jsPlumbJson.length; i++){
+			if(conn.sourceId == this.jsPlumbJson[i].ID){
+				var num;
+				for(var j=0; j<this.jsPlumbJson[i].targetId.length; j++){
+					if(this.jsPlumbJson[i].targetId[j] == conn.targetId){
+						this.jsPlumbJson[i].targetId.splice(j,1);
+						//console.log(this.jsPlumbJson[i]);
 
-		//连接断点完成触发
-		/*instance.bind("connectionDragStop", function (connection) {
-			console.log(connection);
-		});*/
-
-		/*instance.bind("connectionMoved", function (params) {
-			console.log("connection " + params.connection.id + " was moved");
-		});*/
+						var data = {
+								'taskID':this.taskID,//在线营销任务ID
+								'userID':this.userID,//用户ID
+								"icon_ID" : this.jsPlumbJson[i].ID,//节点IconID
+								"icon_targetId" : this.jsPlumbJson[i].targetId.length > 0 ? this.jsPlumbJson[i].targetId : null
+							}
+						this.editIconAjax(data,i);
+						break;
+					}
+				}
+				break;
+			}
+		}
+	},
+	editIconAjax : function(data,num){
+		var _slef = this;
+		$.ajax({
+			type: "POST",
+			url: _slef.editIconApi+"?timeStamp=" + new Date().getTime(),
+			data: data,
+			dataType: "json",
+			//async: false,
+			timeout: 20000,//20秒
+			success: function(msg){
+				if(msg.result){
+					console.log("更新节点:", _slef.jsPlumbJson[num].text, "taskID:", _slef.jsPlumbJson[num].taskID);
+				}else{
+					console.log("更新节点失败，API 返回错误信息！");
+					alert("更新节点失败，API 返回错误信息！");
+				}
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown){
+				alert('ajax通信出错');
+			}
+		});
 	},
 	addNewChart: function (instance, i, clientObj){
 		var _slef = this;
@@ -444,10 +507,10 @@ AlexJsPlumb.prototype = {
 		}else{//新加Icon
 			var jsPlumbObj = {
 				"ID" : "jsPlumb_"+new Date().getTime(),
-				"taskID" : false,
+				"taskID" : null,
 				"type" : clientObj.type,
 				"text" : clientObj.text,
-				"targetId" : false,
+				"targetId" : [],
 				"left": clientObj.clientX + $(window).scrollLeft(),
 				"top": clientObj.clientY + $(window).scrollTop()
 			}
@@ -488,35 +551,24 @@ AlexJsPlumb.prototype = {
 	//清空画布jsPlumb实例
 	removeAllJsPlumb : function(){
 		if(this.instanceArray.length > 0){
-			//删除连接线
-			for(var i=0; i<this.connectArray.length; i++){
-				this.instanceArray[this.instanceArray.length-1].detach(this.connectArray[i]);
-			}
-			//删除所有端点
-			this.instanceArray[this.instanceArray.length-1].deleteEveryEndpoint();
 			//删除绑定事件
 			this.instanceArray[this.instanceArray.length-1].unbind();
 			for(var i=0; i<this.jsPlumbJson.length; i++){
 				$("#"+this.jsPlumbJson[i].ID).unbind();
 			}
+			//删除所有端点
+			this.instanceArray[this.instanceArray.length-1].deleteEveryEndpoint();
 			//删除所有Dom
 			jsPlumb.empty(this.jsPlumbBox);
 		}
 	},
 	//删除节点Icon
 	removeJsPlumbIcon : function(id){
-		var _slef = this;
-		//删除对应的连接线
-		for(var i=0; i<this.connectArray.length; i++){
-			if(this.connectArray[i].sourceId == id || this.connectArray[i].targetId  == id){
-				this.instanceArray[this.instanceArray.length-1].detach(this.connectArray[i]);
-			}
-		}
+		//删除节点绑定的点击事件
+		$("#"+id).unbind();
 		//删除对应的端点
 		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.endpointSourceArray[this.iconSourceArray[id]]);
 		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.targetSourceArray[this.iconSourceArray[id]]);
-		//删除节点绑定的点击事件
-		$("#"+id).unbind();
 		this.instanceArray[this.instanceArray.length-1].remove(id);
 	},
 	//初始化Icon类型对应Class查询数组
@@ -525,21 +577,6 @@ AlexJsPlumb.prototype = {
 			for(var j=0; j<marketingPlanIconJson[i].marketingFun.length; j++){
 				this.iconTypeToClass[marketingPlanIconJson[i].marketingFun[j].type] = marketingPlanIconJson[i].class + " " + marketingPlanIconJson[i].marketingFun[j].class;
 			}
-		}
-	},
-	isIE : function(){
-		if (navigator.userAgent.indexOf('Firefox') >= 0){
-			return true;
-		}else if(navigator.userAgent.indexOf('Chrome') >= 0){
-			return true;
-		}else if(navigator.userAgent.indexOf('Safari') >= 0){
-			return true;
-		}else if(navigator.userAgent.indexOf('Edge') >= 0){
-			return false;
-		}else if(navigator.userAgent.indexOf('MSIE') >= 0){
-			return false;
-		}else{
-			return false;
 		}
 	},
 	//模板内容替换函数
