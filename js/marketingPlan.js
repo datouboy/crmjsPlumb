@@ -14,7 +14,7 @@ AlexJsPlumb.prototype = {
 
 		/////////////*  jsPlumb配置 Start  *////////////
 		//jsPlumbJson数据
-		this.jsPlumbJson = {};
+		this.jsPlumbJson = new Array();
 		//获取任务ID
 		this.taskID = obj.taskID;
 		//获取用户ID
@@ -25,6 +25,8 @@ AlexJsPlumb.prototype = {
 		this.addIconApi = obj.addIconApi;
 		//删除Icon（节点）的API
 		this.delIconApi = obj.delIconApi;
+		//编辑Icon（节点）的API
+		this.editIconApi = obj.editIconApi;
 		//jsPlumbBox容器
 		this.jsPlumbBox = $("#jsPlumbBox");
 		//连接线数组（用于删除连接线）
@@ -165,8 +167,15 @@ AlexJsPlumb.prototype = {
 				timeout: 20000,//20秒
 				success: function(msg){
 					if(msg.result){
+						//删除jsPlumbJson数组中对应数据
+						for(var i=0; i<_slef.jsPlumbJson.length; i++){
+							if(_slef.jsPlumbJson[i].ID == $(this).attr("data-id")){
+								_slef.jsPlumbJson.splice(i,1);
+							}
+						}
+						console.log(_slef.jsPlumbJson);
 						//删除页面Dom相关元素
-						_slef.removeJsPlumbIcon($(this).attr("data-id"),$(this).attr("data-taskid"));
+						_slef.removeJsPlumbIcon($(this).attr("data-id"));
 					}else{
 						console.log("节点删除失败，API 返回错误信息！");
 						alert("节点删除失败，API 返回错误信息！");
@@ -254,6 +263,7 @@ AlexJsPlumb.prototype = {
 			success: function(msg){
 				if(msg.result){
 					_slef.jsPlumbJson = msg.list;
+					//console.log("初始化数据:",_slef.jsPlumbJson);
 					_slef.jsPlumbInstance();
 				}else{
 					console.log("初始化加载失败，API 返回错误信息！");
@@ -317,7 +327,7 @@ AlexJsPlumb.prototype = {
 		//添加新Icon
 		this.addNewChart(this.instanceArray[this.instanceArray.length-1], num, clientObj);
 		//这里的num，经过addNewChart之后数字会加1，所以下面的num不用-1了
-		//删除绑定事件
+		//删除原绑定事件
 		this.instanceArray[this.instanceArray.length-1].unbind();
 		//添加JsPlumb绑定事件
 		this.addJsPlumbBind(this.instanceArray[this.instanceArray.length-1]);
@@ -358,7 +368,7 @@ AlexJsPlumb.prototype = {
 			}
 		});
 	},
-	//添加节点Icon事件绑定
+	//节点Icon 点击事件绑定
 	addJsPlumbIconBind : function(ID){
 		var _slef = this;
 		//console.log("#"+this.jsPlumbJson[num].ID);
@@ -384,30 +394,48 @@ AlexJsPlumb.prototype = {
 	    });
 	},
 	addJsPlumbBind : function(instance){//添加JsPlumb绑定事件
+		var _slef = this;
 		//连接线点击事件绑定
-		instance.bind("click", function (conn, originalEvent) {
+		/*instance.bind("click", function (conn, originalEvent) {
 		    console.log("click");
+		});*/
+
+		//连接线双击事件绑定
+		instance.bind("dblclick", function (conn, e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+		    jsPlumb.detach(conn);
+		    //console.log(conn);
 		});
 
 		//监听新连接事件绑定
 		instance.bind("connection", function (connInfo, originalEvent) {
 		    //init(connInfo.connection);
-			console.log("connection");
+		    //console.log(connInfo.connection);
+		    //添加对应新连接(用于删除连接)
+			_slef.connectArray.push(connInfo.connection);
+		    for(var i=0; i<_slef.jsPlumbJson.length; i++){
+		    	if(_slef.jsPlumbJson[i].ID == connInfo.connection.sourceId){
+		    		_slef.jsPlumbJson[i].targetId = connInfo.connection.targetId;
+		    	}
+		    }
+		    console.log(_slef.jsPlumbJson);
 		});
 
 		//出发端点触发
-		instance.bind("connectionDrag", function (connection) {
-			console.log("connection " + connection.id + " is being dragged. suspendedElement is ", connection.suspendedElement, " of type ", connection.suspendedElementType);
-		});
+		/*instance.bind("connectionDrag", function (connection) {
+			console.log(connection);
+		});*/
 
 		//连接断点完成触发
-		instance.bind("connectionDragStop", function (connection) {
-			console.log("connection " + connection.id + " was dragged");
-		});
+		/*instance.bind("connectionDragStop", function (connection) {
+			console.log(connection);
+		});*/
 
-		instance.bind("connectionMoved", function (params) {
+		/*instance.bind("connectionMoved", function (params) {
 			console.log("connection " + params.connection.id + " was moved");
-		});
+		});*/
 	},
 	addNewChart: function (instance, i, clientObj){
 		var _slef = this;
@@ -439,6 +467,7 @@ AlexJsPlumb.prototype = {
 	    $(this.jsPlumbBox).append(this.substitute(this.iconTemplate,obj));
 	    $("#"+chartID).css("left",jsPlumbObj.left).css("top",jsPlumbObj.top).css("position","absolute").css("margin","0px");
 
+	    //绑定移动动作
 	    instance.draggable(chartID);
 	    instance.batch(function () {
 	        _slef._addEndpoints(instance, chartID, "RightMiddle", "LeftMiddle", i);
@@ -461,26 +490,34 @@ AlexJsPlumb.prototype = {
 		if(this.instanceArray.length > 0){
 			//删除连接线
 			for(var i=0; i<this.connectArray.length; i++){
-				jsPlumb.detach(this.connectArray[i]);
+				this.instanceArray[this.instanceArray.length-1].detach(this.connectArray[i]);
 			}
-			//删除端点
-			for(var i=0; i<this.endpointSourceArray.length; i++){
-				jsPlumb.deleteEndpoint(this.endpointSourceArray[i]);
-				jsPlumb.deleteEndpoint(this.targetSourceArray[i]);
-			}
+			//删除所有端点
+			this.instanceArray[this.instanceArray.length-1].deleteEveryEndpoint();
 			//删除绑定事件
 			this.instanceArray[this.instanceArray.length-1].unbind();
 			for(var i=0; i<this.jsPlumbJson.length; i++){
 				$("#"+this.jsPlumbJson[i].ID).unbind();
 			}
-			$(this.jsPlumbBox).html("");
+			//删除所有Dom
+			jsPlumb.empty(this.jsPlumbBox);
 		}
 	},
 	//删除节点Icon
-	removeJsPlumbIcon : function(id,taskid){
-		jsPlumb.deleteEndpoint(this.endpointSourceArray[this.iconSourceArray[id]]);
-		jsPlumb.deleteEndpoint(this.targetSourceArray[this.iconSourceArray[id]]);
-		$("#"+id).remove();
+	removeJsPlumbIcon : function(id){
+		var _slef = this;
+		//删除对应的连接线
+		for(var i=0; i<this.connectArray.length; i++){
+			if(this.connectArray[i].sourceId == id || this.connectArray[i].targetId  == id){
+				this.instanceArray[this.instanceArray.length-1].detach(this.connectArray[i]);
+			}
+		}
+		//删除对应的端点
+		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.endpointSourceArray[this.iconSourceArray[id]]);
+		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.targetSourceArray[this.iconSourceArray[id]]);
+		//删除节点绑定的点击事件
+		$("#"+id).unbind();
+		this.instanceArray[this.instanceArray.length-1].remove(id);
 	},
 	//初始化Icon类型对应Class查询数组
 	iconTypeToClassFun : function(){
