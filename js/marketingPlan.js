@@ -158,9 +158,9 @@ AlexJsPlumb.prototype = {
 				type: "POST",
 				url: _slef.delIconApi+"?timeStamp=" + new Date().getTime(),
 				data: {
-						taskID: _slef.taskID,
-						userID: _slef.userID,
-						icon_taskID: $(this).attr("data-taskid")
+						"taskID": _slef.taskID,
+						"userID": _slef.userID,
+						"icon_taskID": $(this).attr("data-taskid")
 					},
 				dataType: "json",
 				//async: false,
@@ -402,12 +402,16 @@ AlexJsPlumb.prototype = {
 				var data = {
 					"taskID": _slef.taskID,//在线营销任务ID
 					"userID": _slef.userID,//用户ID
+					"icon_taskID" : _slef.jsPlumbJson[num].taskID,
 					"icon_ID": _slef.jsPlumbJson[num].ID,//节点IconID
 					"icon_left" : e.clientX + $(window).scrollLeft() - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
 					"icon_top" : e.clientY + $(window).scrollTop() - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
 				}
 				//$(this).css({left:data.left,top:data.top}); //用于调试位置是否正确
-		    	_slef.editIconAjax(data,num);
+				if(!isNaN(data.icon_left)){
+					_slef.editIconAjax(data,num);
+					_slef.mousedownClient = false;
+				}
 			}else if(e.which == 3) {//e.which = 3 为鼠标右键事件（用于打开删除按钮）
 				e.preventDefault();
 				e.stopPropagation();
@@ -445,38 +449,62 @@ AlexJsPlumb.prototype = {
 			 * 3,向API提交更新数据
 			 */
 		    //init(connInfo.connection);
-		    var num;
-		    //添加对应新连接(用于删除连接)
-			_slef.connectArray.push(connInfo.connection);
-			//更新新连接线至jsPlumbJson
-		    for(var i=0; i<_slef.jsPlumbJson.length; i++){
-		    	if(_slef.jsPlumbJson[i].ID == connInfo.connection.sourceId){
-		    		_slef.jsPlumbJson[i].targetId.push(connInfo.connection.targetId);
-		    		num = i;
-		    		break;
-		    	}
-		    }
+		    //判断是新建连接还是移动端点的连接
+			if(connInfo.connection.suspendedElementId == null){
+			    var num;
+			    //添加对应新连接(用于删除连接)
+				_slef.connectArray.push(connInfo.connection);
+				//更新新连接线至jsPlumbJson
+			    for(var i=0; i<_slef.jsPlumbJson.length; i++){
+			    	if(_slef.jsPlumbJson[i].ID == connInfo.connection.sourceId){
+			    		_slef.jsPlumbJson[i].targetId.push(connInfo.connection.targetId);
+			    		num = i;
+			    		break;
+			    	}
+			    }
 
-		    var data = {
-					"taskID":_slef.taskID,//在线营销任务ID
-					"userID":_slef.userID,//用户ID
-					"icon_ID" : _slef.jsPlumbJson[num].ID,//节点IconID
-					"icon_targetId" : _slef.jsPlumbJson[num].targetId
-				}
-		    _slef.editIconAjax(data,num);
+			    var data = {
+						"taskID":_slef.taskID,//在线营销任务ID
+						"userID":_slef.userID,//用户ID
+						"icon_taskID": _slef.jsPlumbJson[num].taskID,
+						"icon_ID" : _slef.jsPlumbJson[num].ID,//节点IconID
+						"icon_targetId" : _slef.jsPlumbJson[num].targetId
+					}
+			
+				_slef.editIconAjax(data,num);
+			}
 		    //console.log(connInfo.connection);
 		});
 
-		//监听连接线移除事件
+		//监听连接线移除事件(注意：此监听事件并不监听连接线两头的端点变更)
 		instance.bind("connectionDetached", function (conn) {
 		    //console.log(conn);
-		    _slef.delConnection(conn);
+			_slef.delConnection(conn);
 		});
 
 		//监听连接线移动端点事件
 		instance.bind("connectionMoved", function (conn) {
-		    //_slef.delConnection(conn);
-		    console.log(conn);
+			//更新新连接线至jsPlumbJson
+		    for(var i=0; i<_slef.jsPlumbJson.length; i++){
+		    	if(_slef.jsPlumbJson[i].ID == conn.connection.sourceId){
+		    		for(var j=0; j<_slef.jsPlumbJson[i].targetId.length; j++){
+		    			if(_slef.jsPlumbJson[i].targetId[j] == conn.connection.suspendedElementId){
+		    				_slef.jsPlumbJson[i].targetId.splice(j,1);
+		    				_slef.jsPlumbJson[i].targetId.push(conn.connection.targetId);
+		    				var data = {
+									"taskID":_slef.taskID,//在线营销任务ID
+									"userID":_slef.userID,//用户ID
+									"icon_taskID": _slef.jsPlumbJson[i].taskID,
+									"icon_ID" : _slef.jsPlumbJson[i].ID,//节点IconID
+									"icon_targetId" : _slef.jsPlumbJson[i].targetId
+								}
+		    				_slef.editIconAjax(data,i);
+		    				break;
+		    			}
+		    		}
+		    		break;
+		    	}
+		    }
 		});
 	},
 	//删除连接线处理
@@ -494,8 +522,9 @@ AlexJsPlumb.prototype = {
 						var data = {
 								"taskID": this.taskID,//在线营销任务ID
 								"userID": this.userID,//用户ID
-								"icon_ID" : this.jsPlumbJson[i].ID,//节点IconID
-								"icon_targetId" : this.jsPlumbJson[i].targetId.length > 0 ? this.jsPlumbJson[i].targetId : null
+								"icon_taskID": this.jsPlumbJson[i].taskID,
+								"icon_ID": this.jsPlumbJson[i].ID,//节点IconID
+								"icon_targetId": this.jsPlumbJson[i].targetId.length > 0 ? this.jsPlumbJson[i].targetId : null
 							}
 						this.editIconAjax(data,i);
 						break;
