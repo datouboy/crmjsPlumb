@@ -177,7 +177,7 @@ AlexJsPlumb.prototype = {
 						//console.log(_slef.jsPlumbJson);
 						//删除页面Dom相关元素
 						_slef.removeJsPlumbIcon($(this).attr("data-id"));
-						//console.log(_slef.jsPlumbJson);
+						console.log("删除节点:",$(this).attr("data-id"));
 					}else{
 						console.log("节点删除失败，API 返回错误信息！");
 						alert("节点删除失败，API 返回错误信息！");
@@ -348,8 +348,8 @@ AlexJsPlumb.prototype = {
 			type: "POST",
 			url: this.addIconApi+"?timeStamp=" + new Date().getTime(),
 			data: {
-				'taskID':this.taskID,//在线营销任务ID
-				'userID':this.userID,//用户ID
+				"taskID": this.taskID,//在线营销任务ID
+				"userID": this.userID,//用户ID
 				"icon_ID" : this.jsPlumbJson[num].ID,//节点IconID
 				"icon_type" : this.jsPlumbJson[num].type,
 				"icon_text" : this.jsPlumbJson[num].text,
@@ -363,7 +363,7 @@ AlexJsPlumb.prototype = {
 				if(msg.result){
 					_slef.jsPlumbJson[num].taskID = msg.icon.taskID;
 					$("#"+_slef.jsPlumbJson[num].ID).attr({"data-taskid":_slef.jsPlumbJson[num].taskID});
-					console.log("添加新节点:", _slef.jsPlumbJson[num].text, "taskID:", _slef.jsPlumbJson[num].taskID);
+					console.log("新增节点:", _slef.jsPlumbJson[num].ID, "taskID:", _slef.jsPlumbJson[num].taskID);
 				}else{
 					console.log("添加新节点失败，API 返回错误信息！");
 					alert("添加新节点失败，API 返回错误信息！");
@@ -377,7 +377,6 @@ AlexJsPlumb.prototype = {
 	//节点Icon 点击事件绑定
 	addJsPlumbIconBind : function(ID){
 		var _slef = this;
-		//console.log("#"+this.jsPlumbJson[num].ID);
 		//绑定节点Icon双击事件
 		$(ID).dblclick(function(e){
 			e.preventDefault();
@@ -385,9 +384,31 @@ AlexJsPlumb.prototype = {
 			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
 			$("#myModal").modal('show');
 		})
+		$(ID).mousedown(function(e){
+			_slef.mousedownClient = {
+				mousedownX: e.clientX - $(this).offset().left,
+				mousedownY: e.clientY - $(this).offset().top
+			}
+		})
 		$(ID).mouseup(function(e){
-			//e.which = 3 为鼠标右键事件
-			if(e.which == 3){
+			if(e.which == 1) {//鼠标左键事件，用于捕捉Icon位移数据
+				var num;
+				for(var i=0; i<_slef.jsPlumbJson.length; i++) {
+					if($(this).attr("id") == _slef.jsPlumbJson[i].ID){
+						num = i;
+						break;
+					}
+				}
+				var data = {
+					"taskID": _slef.taskID,//在线营销任务ID
+					"userID": _slef.userID,//用户ID
+					"icon_ID": _slef.jsPlumbJson[num].ID,//节点IconID
+					"icon_left" : e.clientX + $(window).scrollLeft() - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
+					"icon_top" : e.clientY + $(window).scrollTop() - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
+				}
+				//$(this).css({left:data.left,top:data.top}); //用于调试位置是否正确
+		    	_slef.editIconAjax(data,num);
+			}else if(e.which == 3) {//e.which = 3 为鼠标右键事件（用于打开删除按钮）
 				e.preventDefault();
 				e.stopPropagation();
 				$("#nodeIconDelMenu").show();
@@ -415,7 +436,7 @@ AlexJsPlumb.prototype = {
 		    //console.log(conn);
 		});
 
-		//监听新连接事件绑定
+		//监听新建连接事件
 		instance.bind("connection", function (connInfo, originalEvent) {
 			/*
 			 * 添加新连接线流程说明：
@@ -437,8 +458,8 @@ AlexJsPlumb.prototype = {
 		    }
 
 		    var data = {
-					'taskID':_slef.taskID,//在线营销任务ID
-					'userID':_slef.userID,//用户ID
+					"taskID":_slef.taskID,//在线营销任务ID
+					"userID":_slef.userID,//用户ID
 					"icon_ID" : _slef.jsPlumbJson[num].ID,//节点IconID
 					"icon_targetId" : _slef.jsPlumbJson[num].targetId
 				}
@@ -446,10 +467,16 @@ AlexJsPlumb.prototype = {
 		    //console.log(connInfo.connection);
 		});
 
-		//连接线移除监听事件绑定
+		//监听连接线移除事件
 		instance.bind("connectionDetached", function (conn) {
 		    //console.log(conn);
 		    _slef.delConnection(conn);
+		});
+
+		//监听连接线移动端点事件
+		instance.bind("connectionMoved", function (conn) {
+		    //_slef.delConnection(conn);
+		    console.log(conn);
 		});
 	},
 	//删除连接线处理
@@ -465,8 +492,8 @@ AlexJsPlumb.prototype = {
 						//console.log(this.jsPlumbJson[i]);
 
 						var data = {
-								'taskID':this.taskID,//在线营销任务ID
-								'userID':this.userID,//用户ID
+								"taskID": this.taskID,//在线营销任务ID
+								"userID": this.userID,//用户ID
 								"icon_ID" : this.jsPlumbJson[i].ID,//节点IconID
 								"icon_targetId" : this.jsPlumbJson[i].targetId.length > 0 ? this.jsPlumbJson[i].targetId : null
 							}
@@ -489,7 +516,7 @@ AlexJsPlumb.prototype = {
 			timeout: 20000,//20秒
 			success: function(msg){
 				if(msg.result){
-					console.log("更新节点:", _slef.jsPlumbJson[num].text, "taskID:", _slef.jsPlumbJson[num].taskID);
+					console.log("更新节点:", _slef.jsPlumbJson[num].ID);
 				}else{
 					console.log("更新节点失败，API 返回错误信息！");
 					alert("更新节点失败，API 返回错误信息！");
@@ -551,7 +578,7 @@ AlexJsPlumb.prototype = {
 	//清空画布jsPlumb实例
 	removeAllJsPlumb : function(){
 		if(this.instanceArray.length > 0){
-			//删除绑定事件
+			//释放事件
 			this.instanceArray[this.instanceArray.length-1].unbind();
 			for(var i=0; i<this.jsPlumbJson.length; i++){
 				$("#"+this.jsPlumbJson[i].ID).unbind();
@@ -564,7 +591,7 @@ AlexJsPlumb.prototype = {
 	},
 	//删除节点Icon
 	removeJsPlumbIcon : function(id){
-		//删除节点绑定的点击事件
+		//释放事件
 		$("#"+id).unbind();
 		//删除对应的端点
 		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.endpointSourceArray[this.iconSourceArray[id]]);
