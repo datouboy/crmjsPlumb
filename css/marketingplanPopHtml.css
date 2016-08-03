@@ -1,6 +1,7 @@
 .modal-footer-add{
-  margin-top: 20px; text-align: center !important;
+  text-align: center !important; padding-bottom: 0 !important;
 }
+button.btn-primary {background: #0190d4; border:1px solid #0190d4;}
 
 .TimeBOX_title {width:100%; margin:auto; font-size:12px; margin-bottom:10px;}
 .TimeBOX_title td{ line-height:30px; text-align:left;}

@@ -391,7 +391,7 @@ AlexJsPlumb.prototype = {
 			$("#myModal").modal('show');
 			$("#myModalLabel").html("节点编辑: " + $(this).text() + " <span style=\"font-size:12px;color:#d9d9d9;\">(" + _slef.iconTypeToClass[$(this).attr("data-type")].title + ")</span>");
 			var obj = {};
-			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "timeStamp=" + new Date().getTime();
+			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "&timeStamp=" + new Date().getTime();
 			$("#myModalBody").html(_slef.substitute(_slef.iframeBox,obj));
 			//$("#myModalBody").html(_slef.substitute(marketingPlanPopHtml[$(this).attr("data-type")].html,obj));
 		})
