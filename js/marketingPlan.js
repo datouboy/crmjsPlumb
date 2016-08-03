@@ -407,8 +407,12 @@ AlexJsPlumb.prototype = {
 					"icon_left" : e.clientX + $(window).scrollLeft() - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
 					"icon_top" : e.clientY + $(window).scrollTop() - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
 				}
-				//$(this).css({left:data.left,top:data.top}); //用于调试位置是否正确
 				if(!isNaN(data.icon_left)){
+					//自动对齐网格
+					data.icon_left = Math.round(Math.round(data.icon_left)/10)*10;
+					data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
+					$(this).css({left:data.icon_left+"px",top:data.icon_top+"px"});
+
 					_slef.editIconAjax(data,num);
 					_slef.mousedownClient = false;
 				}
@@ -416,7 +420,7 @@ AlexJsPlumb.prototype = {
 				e.preventDefault();
 				e.stopPropagation();
 				$("#nodeIconDelMenu").show();
-				$("#nodeIconDelMenu").css({left:e.clientX + $(window).scrollLeft(), top:e.clientY + $(window).scrollTop()});
+				$("#nodeIconDelMenu").css({left:Math.round(e.clientX + $(window).scrollLeft())+"px", top:Math.round(e.clientY + $(window).scrollTop())+"px"});
 				$("#nodeIconDelMenu .delIcon").attr({"data-id":$(this).attr("id"), "data-taskid":$(this).attr("data-taskid")});
 			}
 		})
@@ -484,27 +488,31 @@ AlexJsPlumb.prototype = {
 
 		//监听连接线移动端点事件
 		instance.bind("connectionMoved", function (conn) {
+			//同一端点断开再连接不做处理
+			if(conn.connection.suspendedElementId == conn.connection.targetId){
+				return false;
+			}
 			//更新新连接线至jsPlumbJson
-		    for(var i=0; i<_slef.jsPlumbJson.length; i++){
-		    	if(_slef.jsPlumbJson[i].ID == conn.connection.sourceId){
-		    		for(var j=0; j<_slef.jsPlumbJson[i].targetId.length; j++){
-		    			if(_slef.jsPlumbJson[i].targetId[j] == conn.connection.suspendedElementId){
-		    				_slef.jsPlumbJson[i].targetId.splice(j,1);
-		    				_slef.jsPlumbJson[i].targetId.push(conn.connection.targetId);
-		    				var data = {
+			for(var i=0; i<_slef.jsPlumbJson.length; i++){
+				if(_slef.jsPlumbJson[i].ID == conn.connection.sourceId){
+					for(var j=0; j<_slef.jsPlumbJson[i].targetId.length; j++){
+						if(_slef.jsPlumbJson[i].targetId[j] == conn.connection.suspendedElementId){
+							_slef.jsPlumbJson[i].targetId.splice(j,1);
+							_slef.jsPlumbJson[i].targetId.push(conn.connection.targetId);
+							var data = {
 									"taskID":_slef.taskID,//在线营销任务ID
 									"userID":_slef.userID,//用户ID
 									"icon_taskID": _slef.jsPlumbJson[i].taskID,
 									"icon_ID" : _slef.jsPlumbJson[i].ID,//节点IconID
 									"icon_targetId" : _slef.jsPlumbJson[i].targetId
 								}
-		    				_slef.editIconAjax(data,i);
-		    				break;
-		    			}
-		    		}
-		    		break;
-		    	}
-		    }
+							_slef.editIconAjax(data,i);
+							break;
+						}
+					}
+					break;
+				}
+			}
 		});
 	},
 	//删除连接线处理
