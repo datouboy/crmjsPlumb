@@ -389,6 +389,8 @@ AlexJsPlumb.prototype = {
 				mousedownX: e.clientX - $(this).offset().left,
 				mousedownY: e.clientY - $(this).offset().top
 			}
+			$(".jsPlumbBox > .jsPlumbIcon").css({"z-index":20});
+			$(this).css({"z-index":21});
 		})
 		$(ID).mouseup(function(e){
 			if(e.which == 1) {//鼠标左键事件，用于捕捉Icon位移数据
@@ -404,15 +406,15 @@ AlexJsPlumb.prototype = {
 					"userID": _slef.userID,//用户ID
 					"icon_taskID" : _slef.jsPlumbJson[num].taskID,
 					"icon_ID": _slef.jsPlumbJson[num].ID,//节点IconID
-					"icon_left" : e.clientX + $(window).scrollLeft() - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
-					"icon_top" : e.clientY + $(window).scrollTop() - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
+					"icon_left" : e.clientX - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
+					"icon_top" : e.clientY - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
 				}
 				if(!isNaN(data.icon_left)){
 					//自动对齐网格
 					data.icon_left = Math.round(Math.round(data.icon_left)/10)*10;
 					data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
 					$(this).css({left:data.icon_left+"px",top:data.icon_top+"px"});
-
+					//console.log(data.icon_left,data.icon_top);
 					_slef.editIconAjax(data,num);
 					_slef.mousedownClient = false;
 				}
