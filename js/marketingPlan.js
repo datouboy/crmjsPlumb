@@ -3,6 +3,8 @@ AlexJsPlumb.prototype = {
 	init : function(obj){
 		//左侧菜单点击状态
 		this.mouseDownState = false;
+		//节点Icon点击状态
+		this.iconMouseDownState = false;
 		//记录点击状态li Icon的位置
 		this.leftIconOffset = false;
 		//记录点击li Icon的鼠标位置
@@ -382,15 +384,28 @@ AlexJsPlumb.prototype = {
 			e.preventDefault();
 			e.stopPropagation();
 			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
+			if($(this).attr("data-type") == "start"){
+				return false;
+			}
+			$("#myModalBody").html("");
 			$("#myModal").modal('show');
+			$("#myModalLabel").html("节点编辑: " + $(this).text() + " <span style=\"font-size:12px;color:#d9d9d9;\">(" + _slef.iconTypeToClass[$(this).attr("data-type")].title + ")</span>");
+			var obj = {};
+			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "timeStamp=" + new Date().getTime();
+			$("#myModalBody").html(_slef.substitute(_slef.iframeBox,obj));
+			//$("#myModalBody").html(_slef.substitute(marketingPlanPopHtml[$(this).attr("data-type")].html,obj));
 		})
 		$(ID).mousedown(function(e){
 			_slef.mousedownClient = {
-				mousedownX: e.clientX - $(this).offset().left,
-				mousedownY: e.clientY - $(this).offset().top
+				"mousedownX": e.clientX - $(this).offset().left,
+				"mousedownY": e.clientY - $(this).offset().top,
+				"left" : $(this).css("left"),
+				"top" : $(this).css("top")
 			}
 			$(".jsPlumbBox > .jsPlumbIcon").css({"z-index":20});
 			$(this).css({"z-index":21});
+			_slef.iconMouseDownState = true;
+			//$(this).css({cursor: "move"});
 		})
 		$(ID).mouseup(function(e){
 			if(e.which == 1) {//鼠标左键事件，用于捕捉Icon位移数据
@@ -409,21 +424,32 @@ AlexJsPlumb.prototype = {
 					"icon_left" : e.clientX - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
 					"icon_top" : e.clientY - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
 				}
-				if(!isNaN(data.icon_left)){
-					//自动对齐网格
-					data.icon_left = Math.round(Math.round(data.icon_left)/10)*10;
-					data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
-					$(this).css({left:data.icon_left+"px",top:data.icon_top+"px"});
-					//console.log(data.icon_left,data.icon_top);
-					_slef.editIconAjax(data,num);
-					_slef.mousedownClient = false;
+				if(_slef.mousedownClient.left == $(this).css("left") && _slef.mousedownClient.top == $(this).css("top")){
+					//节点Icon没有位移不做处理
+				}else{
+					if(!isNaN(data.icon_left)){
+						//自动对齐网格
+						data.icon_left = Math.round(Math.round(data.icon_left)/10)*10;
+						data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
+						$(this).css({left:data.icon_left+"px",top:data.icon_top+"px"});
+						//console.log(data.icon_left,data.icon_top);
+						_slef.editIconAjax(data,num);
+					}
 				}
+				_slef.mousedownClient = false;
+				$(this).css({cursor: "pointer"});
+				_slef.iconMouseDownState = false;
 			}else if(e.which == 3) {//e.which = 3 为鼠标右键事件（用于打开删除按钮）
 				e.preventDefault();
 				e.stopPropagation();
 				$("#nodeIconDelMenu").show();
 				$("#nodeIconDelMenu").css({left:Math.round(e.clientX + $(window).scrollLeft())+"px", top:Math.round(e.clientY + $(window).scrollTop())+"px"});
 				$("#nodeIconDelMenu .delIcon").attr({"data-id":$(this).attr("id"), "data-taskid":$(this).attr("data-taskid")});
+			}
+		})
+		$(ID).mousemove(function(){
+			if(_slef.iconMouseDownState){
+				$(this).css({cursor: "move"});
 			}
 		})
 		$(ID).bind('contextmenu', function(e) {
@@ -580,6 +606,9 @@ AlexJsPlumb.prototype = {
 				"left": clientObj.clientX + $(window).scrollLeft(),
 				"top": clientObj.clientY + $(window).scrollTop()
 			}
+			jsPlumbObj.left = Math.round(Math.round(jsPlumbObj.left)/10)*10;
+			jsPlumbObj.top = Math.round(Math.round(jsPlumbObj.top)/10)*10;
+
 			this.jsPlumbJson.push(jsPlumbObj);
 		}
 		var chartID = jsPlumbObj.ID;
@@ -587,14 +616,14 @@ AlexJsPlumb.prototype = {
 	    //console.log(name);
 
 	    var obj = {}
-	    obj.class = "jsPlumbIcon " + this.iconTypeToClass[jsPlumbObj.type] + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name;
+	    obj.class = "jsPlumbIcon " + this.iconTypeToClass[jsPlumbObj.type].class + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name;
 	    obj.id = chartID;
 	    obj.dataType = jsPlumbObj.type;
 	    obj.dataTaskID = jsPlumbObj.taskID;
 	    obj.text = jsPlumbObj.text;
 
 	    $(this.jsPlumbBox).append(this.substitute(this.iconTemplate,obj));
-	    $("#"+chartID).css("left",jsPlumbObj.left).css("top",jsPlumbObj.top).css("position","absolute").css("margin","0px");
+	    $("#"+chartID).css("left",jsPlumbObj.left+"px").css("top",jsPlumbObj.top+"px").css("position","absolute").css("margin","0px");
 
 	    //绑定移动动作
 	    instance.draggable(chartID);
@@ -641,7 +670,11 @@ AlexJsPlumb.prototype = {
 	iconTypeToClassFun : function(){
 		for(var i=0; i<marketingPlanIconJson.length; i++){
 			for(var j=0; j<marketingPlanIconJson[i].marketingFun.length; j++){
-				this.iconTypeToClass[marketingPlanIconJson[i].marketingFun[j].type] = marketingPlanIconJson[i].class + " " + marketingPlanIconJson[i].marketingFun[j].class;
+				this.iconTypeToClass[marketingPlanIconJson[i].marketingFun[j].type] = {
+					class : marketingPlanIconJson[i].class + " " + marketingPlanIconJson[i].marketingFun[j].class,
+					title : marketingPlanIconJson[i].marketingFun[j].title,
+					popUrl : marketingPlanIconJson[i].marketingFun[j].popUrl
+				}
 			}
 		}
 	},
@@ -668,5 +701,6 @@ AlexJsPlumb.prototype = {
     	"<div class=\"{class}\" id=\"{id}\" data-type=\"{dataType}\" data-taskID=\"{dataTaskID}\">",
     		"<h5>{text}</h5>",
     	"</div>"
-    ].join("")
+    ].join(""),
+    iframeBox : "<iframe id=\"popIframeBox\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" width=\"100%\" src=\"{url}\"></iframe>",
 }

@@ -485,3 +485,6 @@
   content: "\e627";
   visibility: visible;
 }
+.modal-dialog {
+  font-family: "Microsoft Yahei";
+}

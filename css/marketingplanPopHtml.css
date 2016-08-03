@@ -1,0 +1,18 @@
+.modal-footer-add{
+  margin-top: 20px; text-align: center !important;
+}
+
+.TimeBOX_title {width:100%; margin:auto; font-size:12px; margin-bottom:10px;}
+.TimeBOX_title td{ line-height:30px; text-align:left;}
+.TimeBOX_title .T_Name{ text-align:left; width:80px;}
+.TimeBOX_title .TimeBOX_inputbox{ width:80%; height:26px;  text-align:left; line-height:26px; margin-left:4px;}
+.TimeBOX_content{ width:100%; margin:auto; font-size:12px; border:1px solid #dadada;}
+.TimeBOX_content td{ text-align:left; vertical-align:middle;  border:1px solid #dadada; padding:6px 10px;}
+.TimeBOX_content td label.checkbox-inline { margin: 0 6px 0 0;}
+/* .TimeBOX_content label{ padding-left:6px;}
+.TimeBOX_content .radio-inline{ padding-left:16px;} */
+
+
+.TimeBOX_Con_I{ width:120px;}
+.TimeBOX_Con_II ul{ padding-left:6px; vertical-align:middle; margin:0px; padding-bottom:8px; padding-top:8px;}
+.TimeBOX_Con_II li{ vertical-align:middle;  margin:0px; padding-bottom:0px;  padding-top:0px;}

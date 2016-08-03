@@ -18,26 +18,27 @@
 	<script type="text/javascript" src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./js/jsPlumb-2.1.4-min.js"></script>
 	<script type="text/javascript" src="./js/marketingPlanIconJson.js"></script>
+	<script type="text/javascript" src="./js/marketingPlanPopHtml.js"></script>
 	<script type="text/javascript" src="./js/marketingPlan.js"></script>
 </head>
 <body style="padding: 10px;">
 <!-- bootstrap 弹出框 -->
 <div id="myModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">节点编辑</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">确认</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">节点编辑</h4>
+			</div>
+			<div class="modal-body" id="myModalBody">
+				...
+			</div>
+			<!-- <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary">确认</button>
+			</div> -->
+		</div>
+	</div>
 </div>
 <div class="marketingPlan">
 	<div class="marketingPlanLeft">
@@ -66,6 +67,9 @@ var jsPlumbObjJson = {
 	editIconApi : "./js/editIconApiDemo.js"
 }
 var marketingPlan = new AlexJsPlumb(jsPlumbObjJson);
+function closeModalPop(){
+	$('#myModal').modal('hide');
+}
 </script>
 </body>
 </html>

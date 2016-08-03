@@ -7,7 +7,8 @@ var marketingPlanIconJson = [
 				"title" : "开始",
 				"class" : "start",
 				"type" : "start",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : false
 			},
 			{
 				"title" : "时间",
@@ -15,7 +16,8 @@ var marketingPlanIconJson = [
 				"type" : "time",
 				"sourceList" : [
 					"start","wait"
-				]
+				],
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "等待",
@@ -23,7 +25,8 @@ var marketingPlanIconJson = [
 				"type" : "wait",
 				"sourceList" : [
 					"start","wait"
-				]
+				],
+				"popUrl" : "pop_time.html"
 			}
 		]
 	},
@@ -35,37 +38,43 @@ var marketingPlanIconJson = [
 				"title" : "订单查询",
 				"class" : "orderSearch",
 				"type" : "orderSearch",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "会员查询",
 				"class" : "memberSearch",
 				"type" : "memberSearch",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "拆分",
 				"class" : "split",
 				"type" : "split",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "合并",
 				"class" : "merge",
 				"type" : "merge",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "交集",
 				"class" : "intersection",
 				"type" : "intersection",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "排除",
 				"class" : "exclude",
 				"type" : "exclude",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			}
 		]
 	},
@@ -77,7 +86,8 @@ var marketingPlanIconJson = [
 				"title" : "有效客户",
 				"class" : "validMember",
 				"type" : "validMember",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "响应客户",
@@ -85,7 +95,8 @@ var marketingPlanIconJson = [
 				"type" : "allMember",
 				"sourceList" : [
 					"start","wait"
-				]
+				],
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "未响应客户",
@@ -93,7 +104,8 @@ var marketingPlanIconJson = [
 				"type" : "invalidMember",
 				"sourceList" : [
 					"start","wait"
-				]
+				],
+				"popUrl" : "pop_time.html"
 			}
 		]
 	},
@@ -105,7 +117,8 @@ var marketingPlanIconJson = [
 				"title" : "优惠券",
 				"class" : "coupon",
 				"type" : "coupon",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			}
 		]
 	},
@@ -117,13 +130,15 @@ var marketingPlanIconJson = [
 				"title" : "短信",
 				"class" : "sms",
 				"type" : "sms",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "邮件",
 				"class" : "edm",
 				"type" : "edm",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			}
 		]
 	},
@@ -135,13 +150,15 @@ var marketingPlanIconJson = [
 				"title" : "活动分析",
 				"class" : "reportActivity",
 				"type" : "reportActivity",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "实时分析",
 				"class" : "realtimeActivity",
 				"type" : "realtimeActivity",
-				"sourceList" : false
+				"sourceList" : false,
+				"popUrl" : "pop_time.html"
 			}
 		]
 	}
