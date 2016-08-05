@@ -196,6 +196,54 @@
 		border-bottom: 1px solid #dadada;
 		color: #666;
 		padding-left: 10px;
+
+		button {
+			height: 24px;
+			line-height: 24px;
+			background: #0190d4;
+			border: none;
+			border-radius: 4px;
+			color: #fff;
+			margin-right: 10px;
+			padding: 0 10px 0 24px;
+			position: relative;
+
+			&::before {
+				display: block;
+				position: absolute;
+				left: 2px;
+				top: 0;
+				width: 24px;
+				height: 24px;
+				line-height: 24px;
+				text-align: center;
+				font-family: "iconfont";
+				font-style: 12px;
+				color: #fff;
+				content: "";
+			}
+
+			&.goTest::before {
+				content: "\e62a";
+			}
+			&.goStart::before{
+				content: "\e629";
+			}
+			&.goRestart::before{
+				content: "\e627";
+			}
+
+			&.menuOff {
+				background: #c8c8c8;
+			}
+		}
+
+		.stateInfo {
+			height: 36px;
+			line-height: 36px;
+			float: right;
+			padding-right: 20px;
+		}
 	}
 
 	.marketingPlanLeft {
@@ -414,6 +462,19 @@
 						-moz-user-select: none;
 						-ms-user-select: none;
 						user-select: none;
+				    }
+
+				    .mask {
+				    	position: absolute;
+				    	width: 80px;
+				    	height: 50px;
+				    	top: 0;
+				    	left: -15px;
+				    	display: none;
+
+				    	&.openMask {
+				    		display: block;
+				    	}
 				    }
 
 				    &:hover {

@@ -1,10 +1,16 @@
 function AlexJsPlumb(obj){this.init(obj);}
 AlexJsPlumb.prototype = {
 	init : function(obj){
+		//营销计划大任务编辑状态（状态由初始接口获取），0编辑状态，1预执行中，2预执行通过，3正式发送中
+		this.marketingPlanEditState = 0;
 		//左侧菜单点击状态
 		this.mouseDownState = false;
 		//节点Icon点击状态
-		this.iconMouseDownState = false;
+		this.iconMouseDownState = {
+			state:false,//点击状态
+			num:null,//点击Icon对应的jsPlumbJson数组序号
+			mouseup:true//Icon鼠标mouseup点击状态标记
+		};
 		//记录点击状态li Icon的位置
 		this.leftIconOffset = false;
 		//记录点击li Icon的鼠标位置
@@ -108,6 +114,8 @@ AlexJsPlumb.prototype = {
 		this.addLeftIconEvent();
 		//初始化jsPlumb实例
 		this.jsPlumbInit();
+		//流程测试、发送、重新设计按钮事件绑定
+		this.testButtonBind();
 	},
 	readJsPlumbBoxBorders : function(){//读取jsPlumbBox的边界值
 		var jsPlumbBoxOffset =  $(this.jsPlumbBox).offset();
@@ -224,20 +232,36 @@ AlexJsPlumb.prototype = {
 		$(window).mouseup(function(e){
 			e.preventDefault();
 			e.stopPropagation();
-
-			if(_slef.mouseDownState){
-				//拖动Icon边界碰撞检测
-				if(e.clientX > _slef.jsPlumbBoxBorders.left && e.clientX < _slef.jsPlumbBoxBorders.right){
-					if(e.clientY > _slef.jsPlumbBoxBorders.top && e.clientY < _slef.jsPlumbBoxBorders.bottom){
-						//console.log(e.clientX, e.clientY);
-						var clientObj = {
-							clientX: e.clientX - $(this.jsPlumbBox).offset().left - 25,
-							clientY: e.clientY - $(this.jsPlumbBox).offset().top - 25,
-							type: $("#iconMove").attr("data-type"),
-							text: $("#iconMove").text()
+			//只检测鼠标左键事件
+			if(e.which == 1){
+				//判断是否是左侧菜单拖动事件
+				if(_slef.mouseDownState){
+					//拖动Icon边界碰撞检测
+					if(e.clientX > _slef.jsPlumbBoxBorders.left && e.clientX < _slef.jsPlumbBoxBorders.right){
+						if(e.clientY > _slef.jsPlumbBoxBorders.top && e.clientY < _slef.jsPlumbBoxBorders.bottom){
+							//营销计划不可编辑状态
+							if(_slef.marketingPlanEditState !== 0){
+								alert("当前状态不可添加新节点！");
+							}else{
+								var clientObj = {
+									clientX: e.clientX - $(this.jsPlumbBox).offset().left - 25,
+									clientY: e.clientY - $(this.jsPlumbBox).offset().top - 25,
+									type: $("#iconMove").attr("data-type"),
+									text: $("#iconMove").text()
+								}
+								_slef.addNewJsPlumbIcon(clientObj);
+							}
 						}
-						_slef.addNewJsPlumbIcon(clientObj);
 					}
+				}else if(_slef.iconMouseDownState.state){
+					//节点Icon超出编辑区后触发
+					if(_slef.iconMouseDownState.mouseup){
+						//清空画布
+						_slef.removeAllJsPlumb();
+						//初始化jsPlumb实例
+						_slef.jsPlumbInstance();
+					}
+					_slef.iconMouseDownState.mouseup = true;
 				}
 			}
 
@@ -267,7 +291,9 @@ AlexJsPlumb.prototype = {
 			success: function(msg){
 				if(msg.result){
 					_slef.jsPlumbJson = msg.list;
+					_slef.marketingPlanEditState = msg.state;
 					//console.log("初始化数据:",_slef.jsPlumbJson);
+					_slef.showTestButton(_slef.marketingPlanEditState);
 					_slef.jsPlumbInstance();
 				}else{
 					console.log("初始化加载失败，API 返回错误信息！");
@@ -276,6 +302,54 @@ AlexJsPlumb.prototype = {
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown){
 				alert('ajax通信出错');
+			}
+		});
+	},
+	//测试按钮显示状态
+	showTestButton : function(State){
+		$(".marketingPlanRightBox .marketingBoxTopTitleBox > button").removeClass("menuOff");
+		$(".marketingPlanRightBox .marketingBoxTopTitleBox > button").attr({"data-menuoff":"off"});
+		//0编辑状态，1预执行中，2预执行通过，3正式发送中
+		if(State === 0){
+			$("#goTest").attr({"data-menuoff":"open"});
+			$("#goStart").addClass("menuOff");
+			$("#goRestart").addClass("menuOff");
+			$("#marketingPlanStateText").text("编辑状态");
+		}else if(State === 1){
+			$("#goTest").addClass("menuOff");
+			$("#goStart").addClass("menuOff");
+			$("#goRestart").addClass("menuOff");
+			$("#marketingPlanStateText").text("预执行中");
+		}else if(State === 2){
+			$("#goTest").addClass("menuOff");
+			$("#goRestart").attr({"data-menuoff":"open"});
+			$("#marketingPlanStateText").text("预执行成功");
+		}else if(State === 3){
+			$("#goTest").addClass("menuOff");
+			$("#goStart").addClass("menuOff");
+			$("#goRestart").attr({"data-menuoff":"open"});
+			$("#marketingPlanStateText").text("正式发送中");
+		}
+	},
+	//流程测试、发送、重新设计按钮事件绑定
+	testButtonBind : function(){
+		var _slef = this;
+		//流程测试
+		$("#goTest").click(function(){
+			if($(this).attr("data-menuoff") == "open"){
+				console.log("流程测试");
+			}
+		});
+		//正式发送
+		$("#goStart").click(function(){
+			if($(this).attr("data-menuoff") == "open"){
+				console.log("正式发送");
+			}
+		});
+		//重新设计
+		$("#goRestart").click(function(){
+			if($(this).attr("data-menuoff") == "open"){
+				console.log("重新设计");
 			}
 		});
 	},
@@ -312,6 +386,11 @@ AlexJsPlumb.prototype = {
 			this.addNewChart(instance, i);
 			//添加节点Icon事件绑定
 			this.addJsPlumbIconBind($("#"+this.jsPlumbJson[i].ID));
+		}
+
+		//如果营销任务不处于可编辑状态，则增加遮罩，阻挡端点事件
+		if(this.marketingPlanEditState !== 0){
+			$(this.jsPlumbBox).children(".jsPlumbIcon").children(".mask").addClass("openMask");
 		}
 
 		//添加连接线
@@ -383,10 +462,11 @@ AlexJsPlumb.prototype = {
 		$(ID).dblclick(function(e){
 			e.preventDefault();
 			e.stopPropagation();
-			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
+			//开始类型不用弹窗
 			if($(this).attr("data-type") == "start"){
 				return false;
 			}
+			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
 			$("#myModalBody").html("");
 			$("#myModal").modal('show');
 			$("#myModalLabel").html("节点编辑: " + $(this).text() + " <span style=\"font-size:12px;color:#d9d9d9;\">(" + _slef.iconTypeToClass[$(this).attr("data-type")].title + ")</span>");
@@ -402,43 +482,54 @@ AlexJsPlumb.prototype = {
 				"left" : $(this).css("left"),
 				"top" : $(this).css("top")
 			}
-			$(".jsPlumbBox > .jsPlumbIcon").css({"z-index":20});
+			$(_slef.jsPlumbBox).children(".jsPlumbIcon").css({"z-index":20});
 			$(this).css({"z-index":21});
-			_slef.iconMouseDownState = true;
+			//获取jsPlumbJson中对应的数组序号
+			var num;
+			for(var i=0; i<_slef.jsPlumbJson.length; i++) {
+				if($(this).attr("id") == _slef.jsPlumbJson[i].ID){
+					num = i;
+					break;
+				}
+			}
+			_slef.iconMouseDownState.state = true;
+			_slef.iconMouseDownState.num = num;
 			//$(this).css({cursor: "move"});
 		})
 		$(ID).mouseup(function(e){
 			if(e.which == 1) {//鼠标左键事件，用于捕捉Icon位移数据
-				var num;
-				for(var i=0; i<_slef.jsPlumbJson.length; i++) {
-					if($(this).attr("id") == _slef.jsPlumbJson[i].ID){
-						num = i;
-						break;
-					}
-				}
-				var data = {
-					"taskID": _slef.taskID,//在线营销任务ID
-					"userID": _slef.userID,//用户ID
-					"icon_taskID" : _slef.jsPlumbJson[num].taskID,
-					"icon_ID": _slef.jsPlumbJson[num].ID,//节点IconID
-					"icon_left" : e.clientX - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
-					"icon_top" : e.clientY - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
-				}
-				if(_slef.mousedownClient.left == $(this).css("left") && _slef.mousedownClient.top == $(this).css("top")){
-					//节点Icon没有位移不做处理
+				//获取jsPlumbJson中对应的数组序号
+				var num = _slef.iconMouseDownState.num;
+				//营销计划任务处于非编辑状态，则不可移动节点Icon
+				if(_slef.marketingPlanEditState !== 0){
+					$(this).css({left:_slef.jsPlumbJson[num].left+"px",top:_slef.jsPlumbJson[num].top+"px"});
+					_slef.iconMouseDownState.mouseup = false;
 				}else{
-					if(!isNaN(data.icon_left)){
-						//自动对齐网格
-						data.icon_left = Math.round(Math.round(data.icon_left)/10)*10;
-						data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
-						$(this).css({left:data.icon_left+"px",top:data.icon_top+"px"});
-						//console.log(data.icon_left,data.icon_top);
-						_slef.editIconAjax(data,num);
+					var data = {
+						"taskID": _slef.taskID,//在线营销任务ID
+						"userID": _slef.userID,//用户ID
+						"icon_taskID" : _slef.jsPlumbJson[num].taskID,
+						"icon_ID": _slef.jsPlumbJson[num].ID,//节点IconID
+						"icon_left" : e.clientX - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
+						"icon_top" : e.clientY - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
 					}
+					if(_slef.mousedownClient.left == $(this).css("left") && _slef.mousedownClient.top == $(this).css("top")){
+						//节点Icon没有位移不做处理
+					}else{
+						if(!isNaN(data.icon_left)){
+							//自动对齐网格
+							data.icon_left = Math.round(Math.round(data.icon_left)/10)*10;
+							data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
+							$(this).css({left:data.icon_left+"px",top:data.icon_top+"px"});
+							//console.log(data.icon_left,data.icon_top);
+							_slef.editIconAjax(data,num);
+						}
+					}
+					_slef.mousedownClient = false;
+					$(this).css({cursor: "pointer"});
+					_slef.iconMouseDownState.state = false;
+					_slef.iconMouseDownState.num = null;
 				}
-				_slef.mousedownClient = false;
-				$(this).css({cursor: "pointer"});
-				_slef.iconMouseDownState = false;
 			}else if(e.which == 3) {//e.which = 3 为鼠标右键事件（用于打开删除按钮）
 				e.preventDefault();
 				e.stopPropagation();
@@ -448,7 +539,7 @@ AlexJsPlumb.prototype = {
 			}
 		})
 		$(ID).mousemove(function(){
-			if(_slef.iconMouseDownState){
+			if(_slef.iconMouseDownState.state){
 				$(this).css({cursor: "move"});
 			}
 		})
@@ -467,8 +558,9 @@ AlexJsPlumb.prototype = {
 		instance.bind("dblclick", function (conn, e) {
 			e.preventDefault();
 			e.stopPropagation();
-
-		    jsPlumb.detach(conn);
+			if(_slef.marketingPlanEditState === 0){
+		    	jsPlumb.detach(conn);
+		    }
 		    //console.log(conn);
 		});
 
@@ -700,7 +792,8 @@ AlexJsPlumb.prototype = {
     iconTemplate : [
     	"<div class=\"{class}\" id=\"{id}\" data-type=\"{dataType}\" data-taskID=\"{dataTaskID}\">",
     		"<h5>{text}</h5>",
+    		"<div class=\"mask\"></div>",
     	"</div>"
     ].join(""),
-    iframeBox : "<iframe id=\"popIframeBox\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" width=\"100%\" src=\"{url}\"></iframe>",
+    iframeBox : "<iframe id=\"popIframeBox\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" width=\"100%\" style=\"min-height:200px;\" src=\"{url}\"></iframe>",
 }
