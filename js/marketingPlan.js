@@ -35,6 +35,8 @@ AlexJsPlumb.prototype = {
 		this.delIconApi = obj.delIconApi;
 		//编辑Icon（节点）的API
 		this.editIconApi = obj.editIconApi;
+		//预执行状态返回Api
+		this.marketingPlanTestApi = obj.marketingPlanTestApi;
 		//jsPlumbBox容器
 		this.jsPlumbBox = $("#jsPlumbBox");
 		//连接线数组（用于删除连接线）
@@ -190,7 +192,7 @@ AlexJsPlumb.prototype = {
 						console.log("删除节点:",$(this).attr("data-id"));
 					}else{
 						console.log("节点删除失败，API 返回错误信息！");
-						alert("节点删除失败，API 返回错误信息！");
+						alert(msg.error);
 					}
 				}.bind(this),
 				error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -254,6 +256,7 @@ AlexJsPlumb.prototype = {
 						}
 					}
 				}else if(_slef.iconMouseDownState.state){
+					var icon = $("#"+_slef.jsPlumbJson[_slef.iconMouseDownState.num].ID);
 					//节点Icon超出编辑区后触发
 					if(_slef.iconMouseDownState.mouseup){
 						//营销计划不可编辑状态
@@ -267,7 +270,6 @@ AlexJsPlumb.prototype = {
 								_slef.jsPlumbInstance();
 							}else{
 								var num = _slef.iconMouseDownState.num;
-								var icon = $("#"+_slef.jsPlumbJson[_slef.iconMouseDownState.num].ID);
 								var data = {
 									"taskID": _slef.taskID,//在线营销任务ID
 									"userID": _slef.userID,//用户ID
@@ -286,13 +288,20 @@ AlexJsPlumb.prototype = {
 									_slef.editIconAjax(data,num);
 								}
 
-								_slef.mousedownClient = false;
+								/*_slef.mousedownClient = false;
 								$(icon).css({cursor: "pointer"});
+								console.log($(icon).css("cursor"));
 								_slef.iconMouseDownState.state = false;
-								_slef.iconMouseDownState.num = null;
+								_slef.iconMouseDownState.num = null;*/
 							}
 						}
 					}
+					_slef.mousedownClient = false;
+					$(icon).css({cursor: "pointer"});
+					console.log($(icon).css("cursor"));
+					_slef.iconMouseDownState.state = false;
+					_slef.iconMouseDownState.num = null;
+					
 					_slef.iconMouseDownState.mouseup = true;
 				}
 			}
@@ -418,6 +427,13 @@ AlexJsPlumb.prototype = {
 			this.addNewChart(instance, i);
 			//添加节点Icon事件绑定
 			this.addJsPlumbIconBind($("#"+this.jsPlumbJson[i].ID));
+			//营销计划大任务编辑状态处于（1）预执行中或（2）预执行通过，则显示预执行结果状态标记（绿色小勾）
+			if(this.marketingPlanEditState === 1 || this.marketingPlanEditState === 2){
+				//0表示未通过，1表示已通过预执行
+				if(this.jsPlumbJson[i].state === 1){
+					$("#"+this.jsPlumbJson[i].ID).addClass("runOk");
+				}
+			}
 		}
 
 		//如果营销任务不处于可编辑状态，则增加遮罩，阻挡端点事件
@@ -439,6 +455,10 @@ AlexJsPlumb.prototype = {
 		}
 		//添加JsPlumb绑定事件
 		this.addJsPlumbBind(instance);
+		//预执行状态检测
+		if(this.marketingPlanEditState === 1){
+			this.marketingPlanTest();
+		}
 	},
 	addNewJsPlumbIcon : function(clientObj){//添加新sPlumb Icon
 		var _slef = this;
@@ -501,7 +521,7 @@ AlexJsPlumb.prototype = {
 			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
 			$("#myModalBody").html("");
 			$("#myModal").modal('show');
-			$("#myModalLabel").html("节点编辑: " + $(this).text() + " <span style=\"font-size:12px;color:#d9d9d9;\">(" + _slef.iconTypeToClass[$(this).attr("data-type")].title + ")</span>");
+			$("#myModalLabel").html("节点编辑: " + $(this).children("h5").text() + " <span style=\"font-size:12px;color:#d9d9d9;\">(" + _slef.iconTypeToClass[$(this).attr("data-type")].title + ")</span>");
 			var obj = {};
 			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "&timeStamp=" + new Date().getTime();
 			$("#myModalBody").html(_slef.substitute(_slef.iframeBox,obj));
@@ -751,9 +771,13 @@ AlexJsPlumb.prototype = {
 	    obj.dataType = jsPlumbObj.type;
 	    obj.dataTaskID = jsPlumbObj.taskID;
 	    obj.text = jsPlumbObj.text;
+	    obj.userNum = jsPlumbObj.userNum;
 
 	    $(this.jsPlumbBox).append(this.substitute(this.iconTemplate,obj));
 	    $("#"+chartID).css("left",jsPlumbObj.left+"px").css("top",jsPlumbObj.top+"px").css("position","absolute").css("margin","0px");
+	    if(!obj.userNum){
+	    	$("#"+chartID + " .userNum").hide();
+	    }
 
 	    //绑定移动动作
 	    instance.draggable(chartID);
@@ -796,6 +820,59 @@ AlexJsPlumb.prototype = {
 		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.targetSourceArray[this.iconSourceArray[id]]);
 		this.instanceArray[this.instanceArray.length-1].remove(id);
 	},
+	//预执行通讯
+	marketingPlanTest : function(){
+		var _slef = this;
+		function timingFun(){
+			$.ajax({
+				type: "POST",
+				url: _slef.marketingPlanTestApi+"?timeStamp=" + new Date().getTime(),
+				data: {
+					"taskID": _slef.taskID,
+					"userID": _slef.userID,
+					},
+				dataType: "json",
+				//async: false,
+				timeout: 20000,//20秒
+				success: function(msg){
+					if(msg.result){
+						//返回的msg.state有两种状态："executing":预执行中，"end":预执行结束
+						if(msg.state == "executing"){
+							//console.log("更新节点:",msg.list,msg.state);
+							for(var i=0; i<msg.list.length; i++){
+								for(var j=0; j<_slef.jsPlumbJson.length; j++){
+									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
+										maskconsole.log(j,msg.list[i].ID)
+										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
+										break;
+									}
+								}
+							}
+						}else if(msg.state == "end"){
+							//预执行成功后更改状态
+							_slef.marketingPlanEditState = 2;
+							_slef.showTestButton(2);
+							//console.log("预执行完成");
+						}
+					}else{
+						console.log(msg.error);
+						alert(msg.error);
+					}
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					alert('ajax通信出错');
+				}
+			});
+			
+			setTimeout(function(){
+				//预执行结束后结束循环
+				if(_slef.marketingPlanEditState === 1){
+					timingFun && timingFun();
+				}
+			}.bind(this),3000);
+		}
+		timingFun();
+	},
 	//初始化Icon类型对应Class查询数组
 	iconTypeToClassFun : function(){
 		for(var i=0; i<marketingPlanIconJson.length; i++){
@@ -830,6 +907,7 @@ AlexJsPlumb.prototype = {
     iconTemplate : [
     	"<div class=\"{class}\" id=\"{id}\" data-type=\"{dataType}\" data-taskID=\"{dataTaskID}\">",
     		"<h5>{text}</h5>",
+    		"<div class=\"userNum\">{userNum}</div>",
     		"<div class=\"mask\"></div>",
     	"</div>"
     ].join(""),

@@ -1,26 +1,28 @@
 {
 	"result" : true,
-	"state" : 0,
+	"state" : 1,
 	"list" : [
 		{
 			"ID" : "jsPlumb_0",
 			"taskID" : "jsPlumb_0_ttt",
 			"type" : "start",
 			"text" : "开始任务",
-			"state" : 0,
+			"state" : 1,
 			"targetId" : ["jsPlumb_1","jsPlumb_4"],
 			"left": 50,
-			"top": 50
+			"top": 50,
+			"userNum" : false
 		},
 		{
 			"ID" : "jsPlumb_1",
 			"taskID" : "jsPlumb_1_ttt",
 			"type" : "time",
 			"text" : "text1",
-			"state" : 0,
+			"state" : 1,
 			"targetId" : ["jsPlumb_2","jsPlumb_6","jsPlumb_5"],
 			"left": 150,
-			"top": 150
+			"top": 150,
+			"userNum" : false
 		},
 		{
 			"ID" : "jsPlumb_2",
@@ -30,7 +32,8 @@
 			"state" : 0,
 			"targetId" : ["jsPlumb_3"],
 			"left": 350,
-			"top": 250
+			"top": 250,
+			"userNum" : false
 		},
 		{
 			"ID" : "jsPlumb_3",
@@ -40,7 +43,8 @@
 			"state" : 0,
 			"targetId" : ["jsPlumb_7"],
 			"left": 550,
-			"top": 250
+			"top": 250,
+			"userNum" : false
 		},
 		{
 			"ID" : "jsPlumb_4",
@@ -50,7 +54,8 @@
 			"state" : 0,
 			"targetId" : [],
 			"left": 250,
-			"top": 50
+			"top": 50,
+			"userNum" : 60060
 		},
 		{
 			"ID" : "jsPlumb_5",
@@ -60,7 +65,8 @@
 			"state" : 0,
 			"targetId" : ["jsPlumb_7"],
 			"left": 550,
-			"top": 50
+			"top": 50,
+			"userNum" : false
 		},
 		{
 			"ID" : "jsPlumb_6",
@@ -70,7 +76,8 @@
 			"state" : 0,
 			"targetId" : ["jsPlumb_7"],
 			"left": 550,
-			"top": 150
+			"top": 150,
+			"userNum" : false
 		},
 		{
 			"ID" : "jsPlumb_7",
@@ -80,7 +87,8 @@
 			"state" : 0,
 			"targetId" : [],
 			"left": 750,
-			"top": 150
+			"top": 150,
+			"userNum" : false
 		}
 	]
 }

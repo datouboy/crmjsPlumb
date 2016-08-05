@@ -8,5 +8,6 @@
 		"targetId" : "jsPlumb_1",
 		"left": 50,
 		"top": 50
-	}
+	},
+	"error" : null
 }
