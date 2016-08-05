@@ -373,7 +373,7 @@
 .marketingPlan .marketingPlanRight .marketingPlanRightBox .jsPlumbBox {
   position: relative;
   height: 863px;
-  overflow: hidden;
+  overflow: scroll !important;
 }
 .marketingPlan .marketingPlanRight .marketingPlanRightBox .jsPlumbBox .jsPlumbIcon {
   box-shadow: 2px 2px 19px #aaa;

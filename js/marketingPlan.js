@@ -256,10 +256,42 @@ AlexJsPlumb.prototype = {
 				}else if(_slef.iconMouseDownState.state){
 					//节点Icon超出编辑区后触发
 					if(_slef.iconMouseDownState.mouseup){
-						//清空画布
-						_slef.removeAllJsPlumb();
-						//初始化jsPlumb实例
-						_slef.jsPlumbInstance();
+						//营销计划不可编辑状态
+						if(_slef.marketingPlanEditState !== 0){
+							_slef.removeAllJsPlumb();
+							_slef.jsPlumbInstance();
+						}else{//营销计划可编辑状态
+							//拖动Icon节点边界碰撞检测(超出左边线和上边线)
+							if(e.clientX < _slef.jsPlumbBoxBorders.left || e.clientY < _slef.jsPlumbBoxBorders.top){
+								_slef.removeAllJsPlumb();
+								_slef.jsPlumbInstance();
+							}else{
+								var num = _slef.iconMouseDownState.num;
+								var icon = $("#"+_slef.jsPlumbJson[_slef.iconMouseDownState.num].ID);
+								var data = {
+									"taskID": _slef.taskID,//在线营销任务ID
+									"userID": _slef.userID,//用户ID
+									"icon_taskID" : _slef.jsPlumbJson[num].taskID,
+									"icon_ID": _slef.jsPlumbJson[num].ID,//节点IconID
+									"icon_left" : e.clientX - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX + $(_slef.jsPlumbBox).scrollLeft(),
+									"icon_top" : e.clientY - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY + $(_slef.jsPlumbBox).scrollTop()
+								}
+
+								if(!isNaN(data.icon_left)){
+									//自动对齐网格
+									data.icon_left = Math.round(Math.round(data.icon_left)/10)*10;
+									data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
+									//$(icon).css({left:data.icon_left+"px",top:data.icon_top+"px"});
+									//console.log(data.icon_left,data.icon_top);
+									_slef.editIconAjax(data,num);
+								}
+
+								_slef.mousedownClient = false;
+								$(icon).css({cursor: "pointer"});
+								_slef.iconMouseDownState.state = false;
+								_slef.iconMouseDownState.num = null;
+							}
+						}
 					}
 					_slef.iconMouseDownState.mouseup = true;
 				}
@@ -499,7 +531,13 @@ AlexJsPlumb.prototype = {
 		$(ID).mouseup(function(e){
 			if(e.which == 1) {//鼠标左键事件，用于捕捉Icon位移数据
 				//获取jsPlumbJson中对应的数组序号
-				var num = _slef.iconMouseDownState.num;
+				var num;
+				for(var i=0; i<_slef.jsPlumbJson.length; i++) {
+					if($(this).attr("id") == _slef.jsPlumbJson[i].ID){
+						num = i;
+						break;
+					}
+				}
 				//营销计划任务处于非编辑状态，则不可移动节点Icon
 				if(_slef.marketingPlanEditState !== 0){
 					$(this).css({left:_slef.jsPlumbJson[num].left+"px",top:_slef.jsPlumbJson[num].top+"px"});
