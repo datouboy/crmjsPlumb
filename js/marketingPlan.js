@@ -251,6 +251,18 @@ AlexJsPlumb.prototype = {
 									type: $("#iconMove").attr("data-type"),
 									text: $("#iconMove").text()
 								}
+								if($("#iconMove").attr("data-type") == "start"){
+									if(_slef.jsPlumbJson.length > 0){
+										_slef.mouseDownState = false;
+										_slef.leftIconOffset = false;
+										_slef.mousedownClient = false;
+										$('#leftIconCopy').html("");
+
+										console.log("每个计划只允许设置一个开始时间!")
+										alert("每个计划只允许设置一个开始时间!");
+										return false;
+									}
+								}
 								_slef.addNewJsPlumbIcon(clientObj);
 							}
 						}
@@ -517,9 +529,9 @@ AlexJsPlumb.prototype = {
 			e.preventDefault();
 			e.stopPropagation();
 			//开始类型不用弹窗
-			if($(this).attr("data-type") == "start"){
+			/*if($(this).attr("data-type") == "start"){
 				return false;
-			}
+			}*/
 			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
 			$("#myModalBody").html("");
 			$("#myModal").modal('show');
@@ -636,6 +648,24 @@ AlexJsPlumb.prototype = {
 			 * 3,向API提交更新数据
 			 */
 		    //init(connInfo.connection);
+		    //判断是否是允许的连接端
+		    var sourceType = $("#"+connInfo.connection.sourceId).attr("data-type");
+		    var sourceList = _slef.iconTypeToClass[$("#"+connInfo.connection.targetId).attr("data-type")].sourceList;
+		    var sourceListOk = false;
+		    for (var i=0; i<sourceList.length; i++){
+		    	if(sourceType == sourceList[i]){
+		    		sourceListOk = true;
+		    		break;
+		    	}
+		    }
+		    if(sourceList === true || sourceListOk === true){
+		    }else{
+		    	console.log("此节点不可以直接通过本节点连接！");
+		    	//alert("此节点不可以直接通过本节点连接！");
+		    	_slef.bootstrapAlert("此节点不可以直接通过本节点连接！");
+		    	jsPlumb.detach(connInfo.connection);
+		    	return false;
+		    }
 		    //判断是新建连接还是移动端点的连接
 			if(connInfo.connection.suspendedElementId == null){
 			    var num;
@@ -885,7 +915,8 @@ AlexJsPlumb.prototype = {
 				this.iconTypeToClass[marketingPlanIconJson[i].marketingFun[j].type] = {
 					class : marketingPlanIconJson[i].class + " " + marketingPlanIconJson[i].marketingFun[j].class,
 					title : marketingPlanIconJson[i].marketingFun[j].title,
-					popUrl : marketingPlanIconJson[i].marketingFun[j].popUrl
+					popUrl : marketingPlanIconJson[i].marketingFun[j].popUrl,
+					sourceList : marketingPlanIconJson[i].marketingFun[j].sourceList
 				}
 			}
 		}
@@ -896,6 +927,20 @@ AlexJsPlumb.prototype = {
             if (match.charAt(0) == '\\') return match.slice(1);
             return (object[name] != undefined) ? object[name] : '';
         });
+    },
+    //Bootstrap Alert框
+    bootstrapAlert : function(text){
+    	$("#bootstrapAlertBox").html("");
+    	var obj = {}
+		obj.text = text;
+		$("#bootstrapAlertBox").html(this.substitute(this.bootstrapAlertTemplate,obj));
+		$("#alertBox").css({
+			left : (($(window).width() - 600)/2)+"px",
+			top : "200px"
+		})
+		setTimeout(function(){
+			$("#alertBox").alert('close');
+		},3000);
     },
     /*左侧菜单模版*/
     marketingPlanIconTemplate_Ul : [
@@ -916,5 +961,12 @@ AlexJsPlumb.prototype = {
     		"<div class=\"mask\"></div>",
     	"</div>"
     ].join(""),
-    iframeBox : "<iframe id=\"popIframeBox\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" width=\"100%\" style=\"min-height:200px;\" src=\"{url}\"></iframe>",
+    iframeBox : "<iframe id=\"popIframeBox\" name=\"popIframeBox\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" width=\"100%\" style=\"min-height:200px;\" src=\"{url}\"></iframe>",
+    //Bootstrap Alert框模版
+    bootstrapAlertTemplate : [
+		"<div class=\"alert alert-warning alert-dismissible fade in\" id=\"alertBox\">",
+			"<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>",
+			"<div id=\"alertText\"><strong>警告！</strong>{text}</div>",
+		"</div>"
+	].join("")
 }

@@ -8,15 +8,13 @@ var marketingPlanIconJson = [
 				"class" : "start",
 				"type" : "start",
 				"sourceList" : false,
-				"popUrl" : false
+				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "等待时间",
 				"class" : "time",
 				"type" : "time",
-				"sourceList" : [
-					"start","wait"
-				],
+				"sourceList" : true,
 				"popUrl" : "pop_time.html"
 			}
 		]
@@ -29,28 +27,36 @@ var marketingPlanIconJson = [
 				"title" : "根据交易记录",
 				"class" : "dealSearch",
 				"type" : "dealSearch",
-				"sourceList" : false,
+				"sourceList" : [
+					"start","time"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "根据订单状态",
 				"class" : "orderSearch",
 				"type" : "orderSearch",
-				"sourceList" : false,
+				"sourceList" : [
+					"start","time"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "根据会员分组",
 				"class" : "groupSearch",
 				"type" : "groupSearch",
-				"sourceList" : false,
+				"sourceList" : [
+					"start","time"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "手动添加",
 				"class" : "manualSearch",
 				"type" : "manualSearch",
-				"sourceList" : false,
+				"sourceList" : [
+					"start","time"
+				],
 				"popUrl" : "pop_time.html"
 			}
 		]
@@ -63,35 +69,60 @@ var marketingPlanIconJson = [
 				"title" : "拆分",
 				"class" : "split",
 				"type" : "split",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember",
+					"reportActivity"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "合并",
 				"class" : "merge",
 				"type" : "merge",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember",
+					"reportActivity"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "交集",
 				"class" : "intersection",
 				"type" : "intersection",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember",
+					"reportActivity"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "排除",
 				"class" : "exclude",
 				"type" : "exclude",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember",
+					"reportActivity"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "排重",
 				"class" : "noRepeat",
 				"type" : "noRepeat",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember",
+					"reportActivity"
+				],
 				"popUrl" : "pop_time.html"
 			}
 		]
@@ -104,21 +135,33 @@ var marketingPlanIconJson = [
 				"title" : "短信",
 				"class" : "sms",
 				"type" : "sms",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "邮件",
 				"class" : "edm",
 				"type" : "edm",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember"
+				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "发红包",
 				"class" : "luckyMoney",
 				"type" : "luckyMoney",
-				"sourceList" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember"
+				],
 				"popUrl" : "pop_time.html"
 			}
 		]
@@ -132,7 +175,8 @@ var marketingPlanIconJson = [
 				"class" : "validMember",
 				"type" : "validMember",
 				"sourceList" : [
-					"start","wait"
+					"sms","edm","luckyMoney",
+					"reportActivity"
 				],
 				"popUrl" : "pop_time.html"
 			},
@@ -141,7 +185,8 @@ var marketingPlanIconJson = [
 				"class" : "invalidMember",
 				"type" : "invalidMember",
 				"sourceList" : [
-					"start","wait"
+					"sms","edm","luckyMoney",
+					"reportActivity"
 				],
 				"popUrl" : "pop_time.html"
 			}
@@ -155,7 +200,10 @@ var marketingPlanIconJson = [
 				"title" : "活动分析",
 				"class" : "reportActivity",
 				"type" : "reportActivity",
-				"sourceList" : false,
+				"sourceList" : [
+					"sms","edm","luckyMoney",
+					"validMember","invalidMember"
+				],
 				"popUrl" : "pop_time.html"
 			}
 		]

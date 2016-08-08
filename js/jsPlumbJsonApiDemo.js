@@ -1,6 +1,6 @@
 {
 	"result" : true,
-	"state" : 1,
+	"state" : 0,
 	"list" : [
 		{
 			"ID" : "jsPlumb_0",
@@ -60,7 +60,7 @@
 		{
 			"ID" : "jsPlumb_5",
 			"taskID" : "jsPlumb_5_ttt",
-			"type" : "split",
+			"type" : "groupSearch",
 			"text" : "text5",
 			"state" : 0,
 			"targetId" : ["jsPlumb_7"],
@@ -71,7 +71,7 @@
 		{
 			"ID" : "jsPlumb_6",
 			"taskID" : "jsPlumb_6_ttt",
-			"type" : "sms",
+			"type" : "manualSearch",
 			"text" : "text6",
 			"state" : 0,
 			"targetId" : ["jsPlumb_7"],
@@ -82,11 +82,22 @@
 		{
 			"ID" : "jsPlumb_7",
 			"taskID" : "jsPlumb_7_ttt",
-			"type" : "reportActivity",
+			"type" : "sms",
 			"text" : "text7",
 			"state" : 0,
-			"targetId" : [],
+			"targetId" : ["jsPlumb_8"],
 			"left": 750,
+			"top": 150,
+			"userNum" : false
+		},
+		{
+			"ID" : "jsPlumb_8",
+			"taskID" : "jsPlumb_8_ttt",
+			"type" : "reportActivity",
+			"text" : "text8",
+			"state" : 0,
+			"targetId" : [],
+			"left": 900,
 			"top": 150,
 			"userNum" : false
 		}
