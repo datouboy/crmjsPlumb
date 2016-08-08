@@ -285,23 +285,20 @@ AlexJsPlumb.prototype = {
 									data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
 									//$(icon).css({left:data.icon_left+"px",top:data.icon_top+"px"});
 									//console.log(data.icon_left,data.icon_top);
+									_slef.jsPlumbJson[num].left = data.icon_left;
+									_slef.jsPlumbJson[num].top = data.icon_top;
+
 									_slef.editIconAjax(data,num);
 								}
-
-								/*_slef.mousedownClient = false;
-								$(icon).css({cursor: "pointer"});
-								console.log($(icon).css("cursor"));
-								_slef.iconMouseDownState.state = false;
-								_slef.iconMouseDownState.num = null;*/
 							}
 						}
 					}
 					_slef.mousedownClient = false;
 					$(icon).css({cursor: "pointer"});
-					console.log($(icon).css("cursor"));
 					_slef.iconMouseDownState.state = false;
 					_slef.iconMouseDownState.num = null;
-					
+					//console.log($(icon).css("cursor"),"window");
+
 					_slef.iconMouseDownState.mouseup = true;
 				}
 			}
@@ -332,6 +329,11 @@ AlexJsPlumb.prototype = {
 			success: function(msg){
 				if(msg.result){
 					_slef.jsPlumbJson = msg.list;
+					//如果有超出边界值的Icon,则修正Icon位置
+					for(var i=0; i<_slef.jsPlumbJson.length; i++){
+						_slef.jsPlumbJson[i].left = _slef.jsPlumbJson[i].left < 0 ? 0 : _slef.jsPlumbJson[i].left;
+						_slef.jsPlumbJson[i].top = _slef.jsPlumbJson[i].top < 0 ? 0 : _slef.jsPlumbJson[i].top;
+					}
 					_slef.marketingPlanEditState = msg.state;
 					//console.log("初始化数据:",_slef.jsPlumbJson);
 					_slef.showTestButton(_slef.marketingPlanEditState);
@@ -580,6 +582,8 @@ AlexJsPlumb.prototype = {
 							data.icon_top = Math.round(Math.round(data.icon_top)/10)*10;
 							$(this).css({left:data.icon_left+"px",top:data.icon_top+"px"});
 							//console.log(data.icon_left,data.icon_top);
+							_slef.jsPlumbJson[num].left = data.icon_left;
+							_slef.jsPlumbJson[num].top = data.icon_top;
 							_slef.editIconAjax(data,num);
 						}
 					}
@@ -587,6 +591,7 @@ AlexJsPlumb.prototype = {
 					$(this).css({cursor: "pointer"});
 					_slef.iconMouseDownState.state = false;
 					_slef.iconMouseDownState.num = null;
+					//console.log($(this).css("cursor"),"Icon");
 				}
 			}else if(e.which == 3) {//e.which = 3 为鼠标右键事件（用于打开删除按钮）
 				e.preventDefault();
