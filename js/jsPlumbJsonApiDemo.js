@@ -27,7 +27,7 @@
 		{
 			"ID" : "jsPlumb_2",
 			"taskID" : "jsPlumb_2_ttt",
-			"type" : "wait",
+			"type" : "time",
 			"text" : "text2",
 			"state" : 0,
 			"targetId" : ["jsPlumb_3"],
@@ -49,7 +49,7 @@
 		{
 			"ID" : "jsPlumb_4",
 			"taskID" : "jsPlumb_4_ttt",
-			"type" : "memberSearch",
+			"type" : "orderSearch",
 			"text" : "text4",
 			"state" : 0,
 			"targetId" : [],
