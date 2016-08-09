@@ -37,6 +37,8 @@ AlexJsPlumb.prototype = {
 		this.editIconApi = obj.editIconApi;
 		//预执行状态返回Api
 		this.marketingPlanTestApi = obj.marketingPlanTestApi;
+		//通知正式发送Api
+		this.formalSendApi = obj.formalSendApi;
 		//jsPlumbBox容器
 		this.jsPlumbBox = $("#jsPlumbBox");
 		//连接线数组（用于删除连接线）
@@ -243,7 +245,8 @@ AlexJsPlumb.prototype = {
 						if(e.clientY > _slef.jsPlumbBoxBorders.top && e.clientY < _slef.jsPlumbBoxBorders.bottom){
 							//营销计划不可编辑状态
 							if(_slef.marketingPlanEditState !== 0){
-								alert("当前状态不可添加新节点！");
+								//alert("当前状态不可添加新节点！");
+								_slef.bootstrapAlert("warning", "警告！", "当前状态不可添加新节点！");
 							}else{
 								var clientObj = {
 									clientX: e.clientX - $(this.jsPlumbBox).offset().left - 25,
@@ -260,7 +263,7 @@ AlexJsPlumb.prototype = {
 
 										console.log("每个计划只允许设置一个开始时间!")
 										//alert("每个计划只允许设置一个开始时间!");
-										_slef.bootstrapAlert("每个计划只允许设置一个开始时间");
+										_slef.bootstrapAlert("warning", "警告！", "每个计划只允许设置一个开始时间");
 										return false;
 									}
 								}
@@ -378,6 +381,7 @@ AlexJsPlumb.prototype = {
 			$("#marketingPlanStateText").text("预执行中");
 		}else if(State === 2){
 			$("#goTest").addClass("menuOff");
+			$("#goStart").attr({"data-menuoff":"open"});
 			$("#goRestart").attr({"data-menuoff":"open"});
 			$("#marketingPlanStateText").text("预执行成功");
 		}else if(State === 3){
@@ -394,12 +398,46 @@ AlexJsPlumb.prototype = {
 		$("#goTest").click(function(){
 			if($(this).attr("data-menuoff") == "open"){
 				console.log("流程测试");
+				//设置状态进入预执行状态
+				_slef.marketingPlanEditState = 1;
+				_slef.showTestButton(_slef.marketingPlanEditState);
+				//清空画布
+				_slef.removeAllJsPlumb();
+				//初始化画布（初始化时会自动执行预执行操作）
+				_slef.jsPlumbInstance();
 			}
 		});
 		//正式发送
 		$("#goStart").click(function(){
 			if($(this).attr("data-menuoff") == "open"){
 				console.log("正式发送");
+				$.ajax({
+					type: "POST",
+					url: _slef.formalSendApi+"?timeStamp=" + new Date().getTime(),
+					data: {
+						"taskID": _slef.taskID,//在线营销任务ID
+						"userID": _slef.userID//用户ID
+					},
+					dataType: "json",
+					//async: false,
+					timeout: 20000,//20秒
+					success: function(msg){
+						if(msg.result){
+							_slef.marketingPlanEditState = 3;
+							_slef.showTestButton(_slef.marketingPlanEditState);
+							//清空画布
+							_slef.removeAllJsPlumb();
+							//初始化画布（初始化时会自动执行预执行操作）
+							_slef.jsPlumbInstance();
+						}else{
+							//alert("添加新节点失败，API 返回错误信息！");
+							_slef.bootstrapAlert("warning", "警告！", msg.error);
+						}
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown){
+						alert('ajax通信出错');
+					}
+				});
 			}
 		});
 		//重新设计
@@ -663,7 +701,7 @@ AlexJsPlumb.prototype = {
 		    }else{
 		    	console.log("此节点不可以直接连接本节点！");
 		    	//alert("此节点不可以直接通过本节点连接！");
-		    	_slef.bootstrapAlert("此节点不可以直接连接本节点！");
+		    	_slef.bootstrapAlert("warning", "警告！", "此节点不可以直接连接本节点！");
 		    	jsPlumb.detach(connInfo.connection);
 		    	return false;
 		    }
@@ -878,8 +916,16 @@ AlexJsPlumb.prototype = {
 							for(var i=0; i<msg.list.length; i++){
 								for(var j=0; j<_slef.jsPlumbJson.length; j++){
 									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
-										maskconsole.log(j,msg.list[i].ID)
+										console.log(j,msg.list[i].ID);
 										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
+
+										setTimeout(function(){
+											//预执行结束后结束循环
+											if(_slef.marketingPlanEditState === 1){
+												timingFun && timingFun();
+											}
+										}.bind(this),3000);
+
 										break;
 									}
 								}
@@ -888,24 +934,19 @@ AlexJsPlumb.prototype = {
 							//预执行成功后更改状态
 							_slef.marketingPlanEditState = 2;
 							_slef.showTestButton(2);
+							_slef.bootstrapAlert("info", "通知！", "预执行成功!");
 							//console.log("预执行完成");
 						}
 					}else{
 						console.log(msg.error);
-						alert(msg.error);
+						//alert(msg.error);
+						_slef.bootstrapAlert("warning", "警告！", msg.error);
 					}
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown){
 					alert('ajax通信出错');
 				}
 			});
-			
-			setTimeout(function(){
-				//预执行结束后结束循环
-				if(_slef.marketingPlanEditState === 1){
-					timingFun && timingFun();
-				}
-			}.bind(this),3000);
 		}
 		timingFun();
 	},
@@ -930,8 +971,8 @@ AlexJsPlumb.prototype = {
         });
     },
     //Bootstrap Alert框
-    bootstrapAlert : function(text){
-    	var alertPop = $("#bootstrapAlertBox > .alert-warning");
+    bootstrapAlert : function(type, title, text){
+    	var alertPop = $("#bootstrapAlertBox > .alert");
     	if($(alertPop).length > 0){
     		for(var i=0; i<$(alertPop).length; i++){
     			$(alertPop[i]).animate({top: (Number($(alertPop[i]).css("top").replace(/px/, ""))-70)+"px"}, "normal");
@@ -939,7 +980,9 @@ AlexJsPlumb.prototype = {
     	}
     	var id = "alert_" + new Date().getTime();
     	var obj = {}
+    	obj.type = type;
 		obj.text = text;
+		obj.title = title;
 		obj.id = id;
 		$("#bootstrapAlertBox").append(this.substitute(this.bootstrapAlertTemplate,obj));
 		$("#"+id).css({
@@ -971,10 +1014,11 @@ AlexJsPlumb.prototype = {
     ].join(""),
     iframeBox : "<iframe id=\"popIframeBox\" name=\"popIframeBox\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" width=\"100%\" style=\"min-height:200px;\" src=\"{url}\"></iframe>",
     //Bootstrap Alert框模版
+    //4种类型：alert-success alert-info alert-warning alert-danger
     bootstrapAlertTemplate : [
-		"<div class=\"alert alert-warning alert-dismissible fade in\" id=\"{id}\">",
+		"<div class=\"alert alert-{type} alert-dismissible fade in\" id=\"{id}\">",
 			"<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>",
-			"<div id=\"alertText\"><strong>警告！</strong>{text}</div>",
+			"<div id=\"alertText\"><strong>{title}</strong>{text}</div>",
 		"</div>"
 	].join("")
 }
