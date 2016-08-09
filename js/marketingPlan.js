@@ -259,7 +259,8 @@ AlexJsPlumb.prototype = {
 										$('#leftIconCopy').html("");
 
 										console.log("每个计划只允许设置一个开始时间!")
-										alert("每个计划只允许设置一个开始时间!");
+										//alert("每个计划只允许设置一个开始时间!");
+										_slef.bootstrapAlert("每个计划只允许设置一个开始时间");
 										return false;
 									}
 								}
@@ -660,9 +661,9 @@ AlexJsPlumb.prototype = {
 		    }
 		    if(sourceList === true || sourceListOk === true){
 		    }else{
-		    	console.log("此节点不可以直接通过本节点连接！");
+		    	console.log("此节点不可以直接连接本节点！");
 		    	//alert("此节点不可以直接通过本节点连接！");
-		    	_slef.bootstrapAlert("此节点不可以直接通过本节点连接！");
+		    	_slef.bootstrapAlert("此节点不可以直接连接本节点！");
 		    	jsPlumb.detach(connInfo.connection);
 		    	return false;
 		    }
@@ -930,17 +931,24 @@ AlexJsPlumb.prototype = {
     },
     //Bootstrap Alert框
     bootstrapAlert : function(text){
-    	$("#bootstrapAlertBox").html("");
+    	var alertPop = $("#bootstrapAlertBox > .alert-warning");
+    	if($(alertPop).length > 0){
+    		for(var i=0; i<$(alertPop).length; i++){
+    			$(alertPop[i]).animate({top: (Number($(alertPop[i]).css("top").replace(/px/, ""))-70)+"px"}, "normal");
+    		}
+    	}
+    	var id = "alert_" + new Date().getTime();
     	var obj = {}
 		obj.text = text;
-		$("#bootstrapAlertBox").html(this.substitute(this.bootstrapAlertTemplate,obj));
-		$("#alertBox").css({
+		obj.id = id;
+		$("#bootstrapAlertBox").append(this.substitute(this.bootstrapAlertTemplate,obj));
+		$("#"+id).css({
 			left : (($(window).width() - 600)/2)+"px",
-			top : "200px"
+			top : "300px"
 		})
-		setTimeout(function(){
-			$("#alertBox").alert('close');
-		},3000);
+		var closeAlert = setTimeout(function(){
+			$("#"+id).alert('close');
+		},5000);
     },
     /*左侧菜单模版*/
     marketingPlanIconTemplate_Ul : [
@@ -964,7 +972,7 @@ AlexJsPlumb.prototype = {
     iframeBox : "<iframe id=\"popIframeBox\" name=\"popIframeBox\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\" width=\"100%\" style=\"min-height:200px;\" src=\"{url}\"></iframe>",
     //Bootstrap Alert框模版
     bootstrapAlertTemplate : [
-		"<div class=\"alert alert-warning alert-dismissible fade in\" id=\"alertBox\">",
+		"<div class=\"alert alert-warning alert-dismissible fade in\" id=\"{id}\">",
 			"<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>",
 			"<div id=\"alertText\"><strong>警告！</strong>{text}</div>",
 		"</div>"
