@@ -39,6 +39,8 @@ AlexJsPlumb.prototype = {
 		this.marketingPlanTestApi = obj.marketingPlanTestApi;
 		//通知正式发送Api
 		this.formalSendApi = obj.formalSendApi;
+		//通知暂停发送，进入编辑状态Api
+		this.stopSendApi = obj.stopSendApi;
 		//jsPlumbBox容器
 		this.jsPlumbBox = $("#jsPlumbBox");
 		//连接线数组（用于删除连接线）
@@ -418,8 +420,7 @@ AlexJsPlumb.prototype = {
 					url: _slef.formalSendApi+"?timeStamp=" + new Date().getTime(),
 					data: {
 						"taskID": _slef.taskID,//在线营销任务ID
-						"userID": _slef.userID,
-						"state": "send"
+						"userID": _slef.userID
 					},
 					dataType: "json",
 					//async: false,
@@ -449,11 +450,10 @@ AlexJsPlumb.prototype = {
 				console.log("重新设计");
 				$.ajax({
 					type: "POST",
-					url: _slef.formalSendApi+"?timeStamp=" + new Date().getTime(),
+					url: _slef.stopSendApi+"?timeStamp=" + new Date().getTime(),
 					data: {
 						"taskID": _slef.taskID,//在线营销任务ID
-						"userID": _slef.userID,
-						"state": "editing"
+						"userID": _slef.userID
 					},
 					dataType: "json",
 					//async: false,

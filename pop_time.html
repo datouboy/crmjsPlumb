@@ -24,7 +24,7 @@
       <tr>
         <td class="T_Name">节点名：</td>
         <td title="时间节点名称，便于标记"><span>
-          <input type="text" class="form-control TimeBOX_inputbox" maxlength="30" id="timeNameNodeId">
+          <input type="text" class="form-control TimeBOX_inputbox" maxlength="30" id="taskIconText">
           </span></td>
         <td class="T_Name">代码:</td>
         <td><span>
@@ -219,6 +219,7 @@ $(function($) {
 	})
 	$("#popSace").click(function(){
 		window.parent.closeModalPop();
+    window.parent.modifyTaskIconText("jsPlumb_0",$("#taskIconText").val());
 	})
 	//如果有其它JS，此语句放在最后执行
 	//$('#popIframeBox',window.parent.document).css({height:$("#title_TimeBOX").css("height")});

@@ -73,11 +73,21 @@ var jsPlumbObjJson = {
 	delIconApi : "./js/delIconApiDemo.js",
 	editIconApi : "./js/editIconApiDemo.js",
 	marketingPlanTestApi : "./js/marketingPlanTestApiDemo.js",
-	formalSendApi : "./js/formalSendApiDemo.js"
+	formalSendApi : "./js/formalSendApiDemo.js",
+	stopSendApi : "./js/stopSendApiDemo.js"
 }
 var marketingPlan = new AlexJsPlumb(jsPlumbObjJson);
 function closeModalPop(){
 	$('#myModal').modal('hide');
+}
+function modifyTaskIconText(id,text){
+	for(var i=0; i<marketingPlan.jsPlumbJson.length; i++){
+		if(marketingPlan.jsPlumbJson[i].ID == id){
+			marketingPlan.jsPlumbJson[i].text = text;
+			break;
+		}
+	}
+	$("#"+id+" h5").text(text);
 }
 </script>
 </body>
