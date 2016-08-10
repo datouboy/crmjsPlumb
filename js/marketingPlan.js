@@ -416,7 +416,8 @@ AlexJsPlumb.prototype = {
 					url: _slef.formalSendApi+"?timeStamp=" + new Date().getTime(),
 					data: {
 						"taskID": _slef.taskID,//在线营销任务ID
-						"userID": _slef.userID//用户ID
+						"userID": _slef.userID,
+						"state": "send"
 					},
 					dataType: "json",
 					//async: false,
@@ -444,6 +445,34 @@ AlexJsPlumb.prototype = {
 		$("#goRestart").click(function(){
 			if($(this).attr("data-menuoff") == "open"){
 				console.log("重新设计");
+				$.ajax({
+					type: "POST",
+					url: _slef.formalSendApi+"?timeStamp=" + new Date().getTime(),
+					data: {
+						"taskID": _slef.taskID,//在线营销任务ID
+						"userID": _slef.userID,
+						"state": "editing"
+					},
+					dataType: "json",
+					//async: false,
+					timeout: 20000,//20秒
+					success: function(msg){
+						if(msg.result){
+							_slef.marketingPlanEditState = 0;
+							_slef.showTestButton(_slef.marketingPlanEditState);
+							//清空画布
+							_slef.removeAllJsPlumb();
+							//初始化画布（初始化时会自动执行预执行操作）
+							_slef.jsPlumbInstance();
+						}else{
+							//alert("添加新节点失败，API 返回错误信息！");
+							_slef.bootstrapAlert("warning", "警告！", msg.error);
+						}
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown){
+						alert('ajax通信出错');
+					}
+				});
 			}
 		});
 	},

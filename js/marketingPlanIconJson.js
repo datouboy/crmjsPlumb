@@ -73,7 +73,7 @@ var marketingPlanIconJson = [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
 					"validMember","invalidMember",
-					"reportActivity"
+					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_time.html"
 			},
@@ -85,7 +85,7 @@ var marketingPlanIconJson = [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
 					"validMember","invalidMember",
-					"reportActivity"
+					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_time.html"
 			},
@@ -97,7 +97,7 @@ var marketingPlanIconJson = [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
 					"validMember","invalidMember",
-					"reportActivity"
+					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_time.html"
 			},
@@ -109,7 +109,7 @@ var marketingPlanIconJson = [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
 					"validMember","invalidMember",
-					"reportActivity"
+					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_time.html"
 			},
@@ -121,7 +121,7 @@ var marketingPlanIconJson = [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
 					"validMember","invalidMember",
-					"reportActivity"
+					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_time.html"
 			}
@@ -176,7 +176,7 @@ var marketingPlanIconJson = [
 				"type" : "validMember",
 				"sourceList" : [
 					"sms","edm","luckyMoney",
-					"reportActivity"
+					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_time.html"
 			},
@@ -186,7 +186,7 @@ var marketingPlanIconJson = [
 				"type" : "invalidMember",
 				"sourceList" : [
 					"sms","edm","luckyMoney",
-					"reportActivity"
+					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_time.html"
 			}
@@ -200,6 +200,16 @@ var marketingPlanIconJson = [
 				"title" : "活动分析",
 				"class" : "reportActivity",
 				"type" : "reportActivity",
+				"sourceList" : [
+					"sms","edm","luckyMoney",
+					"validMember","invalidMember"
+				],
+				"popUrl" : "pop_time.html"
+			},
+			{
+				"title" : "红包发送统计",
+				"class" : "luckyMoneyActivity",
+				"type" : "luckyMoneyActivity",
 				"sourceList" : [
 					"sms","edm","luckyMoney",
 					"validMember","invalidMember"
