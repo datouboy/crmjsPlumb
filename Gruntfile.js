@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         options: {
           paths: ['assets/css'],
           plugins: [
-            new (require('less-plugin-autoprefix'))({browsers: ["last 2 versions"]}),//自动补全CSS3的前缀
+            new (require('less-plugin-autoprefix'))({browsers: ["ie >= 8","ie_mob >= 10","ff >= 26","chrome >= 30","safari >= 6","opera >= 23","ios >= 5","android >= 2.3","bb >= 10"]}),//自动补全CSS3的前缀
             new (require('less-plugin-clean-css'))()//压缩CSS
           ],
           modifyVars: {
