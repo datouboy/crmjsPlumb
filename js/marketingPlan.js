@@ -193,8 +193,9 @@ AlexJsPlumb.prototype = {
 						_slef.removeJsPlumbIcon($(this).attr("data-id"));
 						console.log("删除节点:",$(this).attr("data-id"));
 					}else{
-						console.log("节点删除失败，API 返回错误信息！");
-						alert(msg.error);
+						//console.log("节点删除失败，API 返回错误信息！");
+						//alert(msg.error);
+						_slef.bootstrapAlert("warning", "警告！", msg.error);
 					}
 				}.bind(this),
 				error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -329,7 +330,7 @@ AlexJsPlumb.prototype = {
 	},
 	//Ajax获取初始化数据后初始化jsPlumb
 	jsPlumbInit: function(){
-		this.removeAllJsPlumb();
+		//this.removeAllJsPlumb();
 		var _slef = this;
 		//获取初始化Json数据
 		$.ajax({
@@ -355,8 +356,9 @@ AlexJsPlumb.prototype = {
 					_slef.showTestButton(_slef.marketingPlanEditState);
 					_slef.jsPlumbInstance();
 				}else{
-					console.log("初始化加载失败，API 返回错误信息！");
-					alert("初始化加载失败，API 返回错误信息！");
+					console.log("初始化加载失败，点击确定重新加载数据！");
+					alert("初始化加载失败，点击确定重新加载数据！");
+					location.reload();
 				}
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -581,7 +583,11 @@ AlexJsPlumb.prototype = {
 					console.log("新增节点:", _slef.jsPlumbJson[num].ID, "taskID:", _slef.jsPlumbJson[num].taskID);
 				}else{
 					console.log("添加新节点失败，API 返回错误信息！");
-					alert("添加新节点失败，API 返回错误信息！");
+					//alert("添加新节点失败，API 返回错误信息！");
+					_slef.jsPlumbJson.pop();
+					_slef.removeAllJsPlumb();
+					_slef.jsPlumbInstance();
+					_slef.bootstrapAlert("warning", "警告！", msg.error);
 				}
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -837,7 +843,10 @@ AlexJsPlumb.prototype = {
 					console.log("更新节点:", _slef.jsPlumbJson[num].ID);
 				}else{
 					console.log("更新节点失败，API 返回错误信息！");
-					alert("更新节点失败，API 返回错误信息！");
+					//alert("更新节点失败，API 返回错误信息！");
+					_slef.bootstrapAlert("warning", "警告！", msg.error);
+					_slef.removeAllJsPlumb();
+					_slef.jsPlumbInit();
 				}
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown){

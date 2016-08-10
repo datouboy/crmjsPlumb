@@ -221,7 +221,10 @@ $(function($) {
 		window.parent.closeModalPop();
 	})
 	//如果有其它JS，此语句放在最后执行
-	$('#popIframeBox',window.parent.document).css({height:$("#title_TimeBOX").css("height")});
+	//$('#popIframeBox',window.parent.document).css({height:$("#title_TimeBOX").css("height")});
+  setTimeout(function(){
+    $('#popIframeBox',window.parent.document).css({height:$(document.body).height()});
+  },100);
 });
 </script>
 </body>
