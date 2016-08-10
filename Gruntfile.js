@@ -1,0 +1,57 @@
+module.exports = function(grunt) {
+
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> by <%= pkg.author %> */\n'
+      },
+      /*build: {
+        src: 'src/<%= pkg.name %>.js',
+        dest: 'build/<%= pkg.name %>.min.js'
+      }*/
+      builda: {//任务一
+        options: {
+          report: "min"
+  		  },
+    		files: {
+    		  'js/marketingPlan.min.js': ['js/marketingPlan.js']
+    		}
+      },
+    },
+    less: {
+      development: {
+        options: {
+          paths: ['assets/css']
+        },
+        files: {
+          'css/marketingplan.css': 'css/marketingplan.less'
+        }
+      },
+      production: {
+        options: {
+          paths: ['assets/css'],
+          plugins: [
+            new (require('less-plugin-autoprefix'))({browsers: ["last 2 versions"]}),//自动补全CSS3的前缀
+            new (require('less-plugin-clean-css'))()//压缩CSS
+          ],
+          modifyVars: {
+            imgPath: '"http://mycdn.com/path/to/images"',
+            bgColor: 'red'
+          }
+        },
+        files: {
+          'css/marketingplan.css': 'css/marketingplan.less'
+        }
+      }
+    }
+  });
+
+  // 加载包含 "uglify" 任务的插件。
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  // 加载Less编译插件
+  grunt.loadNpmTasks('grunt-contrib-less');
+  // 默认被执行的任务列表。
+  grunt.registerTask('default', ['uglify','less']);
+
+};
