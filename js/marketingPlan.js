@@ -979,6 +979,10 @@ AlexJsPlumb.prototype = {
 						console.log(msg.error);
 						//alert(msg.error);
 						_slef.bootstrapAlert("warning", "警告！", msg.error);
+						//预执行失败后，退回到编辑状态
+						_slef.marketingPlanEditState = 0;
+						_slef.showTestButton(0);
+						_slef.jsPlumbInstance();
 					}
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown){
