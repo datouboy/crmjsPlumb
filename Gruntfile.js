@@ -86,7 +86,7 @@ module.exports = function(grunt) {
                 },
             },
             js: {
-                files: ['src/js/*.js'],
+                files: ['src/js/*Demo.js', 'src/js/marketingPlanIconJson.js'],
                 tasks: ['copy:js', 'clean'],
                 options: {
                     spawn: false,

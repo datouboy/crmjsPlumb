@@ -1,6 +1,12 @@
 function AlexJsPlumb(obj){this.init(obj);}
 AlexJsPlumb.prototype = {
 	init : function(obj){
+		//获取任务ID
+		this.taskID = obj.taskID;
+		//获取用户ID
+		this.userID = obj.userID;
+		//Ajax提交方式
+		this.ajaxType = obj.ajaxType;
 		//营销计划大任务编辑状态（状态由初始接口获取），0编辑状态，1预执行中，2预执行通过，3正式发送中
 		this.marketingPlanEditState = 0;
 		//左侧菜单点击状态
@@ -23,10 +29,6 @@ AlexJsPlumb.prototype = {
 		/////////////*  jsPlumb配置 Start  *////////////
 		//jsPlumbJson数据
 		this.jsPlumbJson = new Array();
-		//获取任务ID
-		this.taskID = obj.taskID;
-		//获取用户ID
-		this.userID = obj.userID;
 		//获取jsPlumb初始化Json数据的API
 		this.jsPlumbJsonApi = obj.jsPlumbJsonApi;
 		//添加新Icon（节点）的API
@@ -173,7 +175,7 @@ AlexJsPlumb.prototype = {
 			 * 3，删除页面Dom相关元素
 			 */
 			$.ajax({
-				type: "POST",
+				type: _slef.ajaxType,
 				url: _slef.delIconApi+"?timeStamp=" + new Date().getTime(),
 				data: {
 						"taskID": _slef.taskID,
@@ -340,7 +342,7 @@ AlexJsPlumb.prototype = {
 		var _slef = this;
 		//获取初始化Json数据
 		$.ajax({
-			type: "POST",
+			type: _slef.ajaxType,
 			url: this.jsPlumbJsonApi+"?timeStamp=" + new Date().getTime(),
 			data: {
 					taskID: this.taskID,
@@ -409,7 +411,7 @@ AlexJsPlumb.prototype = {
 			if($(this).attr("data-menuoff") == "open"){
 				console.log("流程测试");
 				$.ajax({
-					type: "POST",
+					type: _slef.ajaxType,
 					url: _slef.testSendApi+"?timeStamp=" + new Date().getTime(),
 					data: {
 						"taskID": _slef.taskID,//在线营销任务ID
@@ -445,7 +447,7 @@ AlexJsPlumb.prototype = {
 			if($(this).attr("data-menuoff") == "open"){
 				console.log("正式发送");
 				$.ajax({
-					type: "POST",
+					type: _slef.ajaxType,
 					url: _slef.formalSendApi+"?timeStamp=" + new Date().getTime(),
 					data: {
 						"taskID": _slef.taskID,//在线营销任务ID
@@ -480,7 +482,7 @@ AlexJsPlumb.prototype = {
 			if($(this).attr("data-menuoff") == "open"){
 				console.log("重新设计");
 				$.ajax({
-					type: "POST",
+					type: _slef.ajaxType,
 					url: _slef.stopSendApi+"?timeStamp=" + new Date().getTime(),
 					data: {
 						"taskID": _slef.taskID,//在线营销任务ID
@@ -595,7 +597,7 @@ AlexJsPlumb.prototype = {
 		 * 将taskID更新至jsPlumbJson数组及页面Dom元素上
 		 */
 		$.ajax({
-			type: "POST",
+			type: _slef.ajaxType,
 			url: this.addIconApi+"?timeStamp=" + new Date().getTime(),
 			data: {
 				"taskID": this.taskID,//在线营销任务ID
@@ -867,7 +869,7 @@ AlexJsPlumb.prototype = {
 	editIconAjax : function(data,num){
 		var _slef = this;
 		$.ajax({
-			type: "POST",
+			type: _slef.ajaxType,
 			url: _slef.editIconApi+"?timeStamp=" + new Date().getTime(),
 			data: data,
 			dataType: "json",
@@ -974,7 +976,7 @@ AlexJsPlumb.prototype = {
 		var _slef = this;
 		function timingFun(){
 			$.ajax({
-				type: "POST",
+				type: _slef.ajaxType,
 				url: _slef.marketingPlanTestApi+"?timeStamp=" + new Date().getTime(),
 				data: {
 					"taskID": _slef.taskID,
