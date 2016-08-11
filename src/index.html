@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="./css/marketingplan.css">
+	<!-- Bootstrap CSS -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet" />
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+		<script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript" src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./js/jsPlumb-2.1.4-min.js"></script>
+	<script type="text/javascript" src="./js/marketingPlanIconJson.js"></script>
+	<script type="text/javascript" src="./js/marketingPlan.min.js"></script>
+</head>
+<body style="padding: 10px;">
+<!-- bootstrap Alert框 加载框 -->
+<div class="bootstrapAlertBox" id="bootstrapAlertBox"></div>
+<!-- bootstrap 弹出框 -->
+<div id="myModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">节点编辑</h4>
+			</div>
+			<div class="modal-body" id="myModalBody">
+				...
+			</div>
+			<!-- <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary">确认</button>
+			</div> -->
+		</div>
+	</div>
+</div>
+<div class="marketingPlan">
+	<div class="marketingPlanLeft">
+		<div class="marketingBoxTopTitleBox">
+			设计工具（拖拽图标至右侧）
+		</div>
+		<div class="marketingPlanIconBox" id="marketingPlanIconBox">
+		</div>
+	</div>
+	<div class="marketingPlanRight">
+		<div class="marketingPlanRightBox">
+			<div class="marketingBoxTopTitleBox">
+				<button class="goTest" id="goTest">流程测试</button>
+				<button class="goStart" id="goStart">正式发送</button>
+				<button class="goRestart" id="goRestart">重新设计</button>
+				<div class="stateInfo">
+					当前状态：<span id="marketingPlanStateText"></span>
+				</div>
+			</div>
+			<div class="jsPlumbBox" id="jsPlumbBox">
+			</div>
+		</div>
+	</div>
+</div>
+<script language="javascript" type="text/javascript">
+var jsPlumbObjJson = {
+	taskID : 123,
+	userID : 123,
+	jsPlumbJsonApi : "./js/jsPlumbJsonApiDemo.js",
+	addIconApi : "./js/addIconApiDemo.js",
+	delIconApi : "./js/delIconApiDemo.js",
+	editIconApi : "./js/editIconApiDemo.js",
+	marketingPlanTestApi : "./js/marketingPlanTestApiDemo.js",
+	formalSendApi : "./js/formalSendApiDemo.js",
+	stopSendApi : "./js/stopSendApiDemo.js",
+	testSendApi : "./js/testSendApiDemo.js"
+}
+var marketingPlan = new AlexJsPlumb(jsPlumbObjJson);
+function closeModalPop(){
+	$('#myModal').modal('hide');
+}
+function modifyTaskIconText(id,text){
+	for(var i=0; i<marketingPlan.jsPlumbJson.length; i++){
+		if(marketingPlan.jsPlumbJson[i].ID == id){
+			marketingPlan.jsPlumbJson[i].text = text;
+			break;
+		}
+	}
+	$("#"+id+" h5").text(text);
+}
+</script>
+</body>
+</html>

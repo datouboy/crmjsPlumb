@@ -41,6 +41,8 @@ AlexJsPlumb.prototype = {
 		this.formalSendApi = obj.formalSendApi;
 		//通知暂停发送，进入编辑状态Api
 		this.stopSendApi = obj.stopSendApi;
+		//通知进入预执行状态Api
+		this.testSendApi = obj.testSendApi;
 		//jsPlumbBox容器
 		this.jsPlumbBox = $("#jsPlumbBox");
 		//连接线数组（用于删除连接线）
@@ -181,6 +183,8 @@ AlexJsPlumb.prototype = {
 				dataType: "json",
 				//async: false,
 				timeout: 20000,//20秒
+				beforeSend: function(){
+				},
 				success: function(msg){
 					if(msg.result){
 						//删除jsPlumbJson数组中对应数据
@@ -345,6 +349,8 @@ AlexJsPlumb.prototype = {
 			dataType: "json",
 			//async: false,
 			timeout: 20000,//20秒
+			beforeSend: function(){
+			},
 			success: function(msg){
 				if(msg.result){
 					_slef.jsPlumbJson = msg.list;
@@ -402,13 +408,36 @@ AlexJsPlumb.prototype = {
 		$("#goTest").click(function(){
 			if($(this).attr("data-menuoff") == "open"){
 				console.log("流程测试");
-				//设置状态进入预执行状态
-				_slef.marketingPlanEditState = 1;
-				_slef.showTestButton(_slef.marketingPlanEditState);
-				//清空画布
-				_slef.removeAllJsPlumb();
-				//初始化画布（初始化时会自动执行预执行操作）
-				_slef.jsPlumbInstance();
+				$.ajax({
+					type: "POST",
+					url: _slef.testSendApi+"?timeStamp=" + new Date().getTime(),
+					data: {
+						"taskID": _slef.taskID,//在线营销任务ID
+						"userID": _slef.userID
+					},
+					dataType: "json",
+					//async: false,
+					timeout: 20000,//20秒
+					beforeSend: function(){
+					},
+					success: function(msg){
+						if(msg.result){
+							//设置状态进入预执行状态
+							_slef.marketingPlanEditState = 1;
+							_slef.showTestButton(_slef.marketingPlanEditState);
+							//清空画布
+							_slef.removeAllJsPlumb();
+							//初始化画布（初始化时会自动执行预执行操作）
+							_slef.jsPlumbInstance();
+						}else{
+							//alert("添加新节点失败，API 返回错误信息！");
+							_slef.bootstrapAlert("warning", "警告！", msg.error);
+						}
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown){
+						alert('ajax通信出错');
+					}
+				});
 			}
 		});
 		//正式发送
@@ -425,6 +454,8 @@ AlexJsPlumb.prototype = {
 					dataType: "json",
 					//async: false,
 					timeout: 20000,//20秒
+					beforeSend: function(){
+					},
 					success: function(msg){
 						if(msg.result){
 							_slef.marketingPlanEditState = 3;
@@ -458,6 +489,8 @@ AlexJsPlumb.prototype = {
 					dataType: "json",
 					//async: false,
 					timeout: 20000,//20秒
+					beforeSend: function(){
+					},
 					success: function(msg){
 						if(msg.result){
 							_slef.marketingPlanEditState = 0;
@@ -576,6 +609,8 @@ AlexJsPlumb.prototype = {
 			dataType: "json",
 			//async: false,
 			timeout: 20000,//20秒
+			beforeSend: function(){
+			},
 			success: function(msg){
 				if(msg.result){
 					_slef.jsPlumbJson[num].taskID = msg.icon.taskID;
@@ -838,6 +873,8 @@ AlexJsPlumb.prototype = {
 			dataType: "json",
 			//async: false,
 			timeout: 20000,//20秒
+			beforeSend: function(){
+			},
 			success: function(msg){
 				if(msg.result){
 					console.log("更新节点:", _slef.jsPlumbJson[num].ID);
@@ -946,6 +983,8 @@ AlexJsPlumb.prototype = {
 				dataType: "json",
 				//async: false,
 				timeout: 20000,//20秒
+				beforeSend: function(){
+				},
 				success: function(msg){
 					if(msg.result){
 						//返回的msg.state有两种状态："executing":预执行中，"end":预执行结束
@@ -956,18 +995,16 @@ AlexJsPlumb.prototype = {
 									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
 										console.log(j,msg.list[i].ID);
 										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
-
-										setTimeout(function(){
-											//预执行结束后结束循环
-											if(_slef.marketingPlanEditState === 1){
-												timingFun && timingFun();
-											}
-										}.bind(this),3000);
-
 										break;
 									}
 								}
 							}
+							setTimeout(function(){
+								//预执行结束后结束循环
+								if(_slef.marketingPlanEditState === 1){
+									timingFun();
+								}
+							},3000);
 						}else if(msg.state == "end"){
 							//预执行成功后更改状态
 							_slef.marketingPlanEditState = 2;
