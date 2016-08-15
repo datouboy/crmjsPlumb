@@ -24,50 +24,59 @@
         <div class="popTaskName">
             <dl>
                 <dt>节点名：</dt>
-                <dd><input type="text" class="form-control input-sm" id="taskIconText" maxlength="30"></dd>
+                <dd>
+                    <input type="text" class="form-control input-sm" id="taskIconText" maxlength="30">
+                </dd>
             </dl>
             <span class="right">节点ID : 123123</span>
         </div>
+        <div class="btnBOX_DELADD">
+            <button type="button" class="btn btn-primary btn-xs add">添加分组</button>
+        </div>
+        <table cellpadding="0" cellspacing="0" class="tableBox">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>分组名</th>
+                    <th>各组百分比</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>
+                        <input class="form-control input-sm" maxlength="30" type="text" value="拆分组1">
+                    </td>
+                    <td>
+                        <input class="form-control input-sm" value="50%" type="text">
+                    </td>
+                    <td>
+                        <a href="javascript:void(0);">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>
+                        <input class="form-control input-sm" maxlength="30" type="text" value="拆分组2">
+                    </td>
+                    <td>
+                        <input class="form-control input-sm" value="50%" type="text">
+                    </td>
+                    <td>
+                        <a href="javascript:void(0);">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <table cellpadding="0" cellspacing="0" class="tableBox">
             <tbody>
                 <tr>
-                    <td width="140">
-                        <label class="radio-inline">
-                            <input type="radio" name="waitType" value="1" checked=""> 等待至指定日期：
-                        </label>
-                    </td>
-                    <td width="290" class="form-inline">
-                        <input type="text" class="form-control input-sm">
-                    </td>
-                    <td rowspan="2" width="90">指定时分：</td>
-                    <td rowspan="2" class="form-inline">
-                        <input type="text" class="form-control input-sm">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label class="radio-inline">
-                            <input type="radio" name="waitType" value="2"> 等待天数：
-                        </label>
-                    </td>
-                    <td class="form-inline">
-                        <input type="text" maxlength="8" class="form-control input-sm">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label class="radio-inline">
-                            <input type="radio" name="waitType" id="optionsRadios1" value="3"> 等待时间：
-                        </label>
-                    </td>
-                    <td colspan="3" class="form-inline">
-                        <input type="text" maxlength="8" class="form-control input-sm">&nbsp;小时&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="text" maxlength="8" class="form-control input-sm">&nbsp;分钟
-                    </td>
+                    <td colspan="4">分组数：2组　　　<button type="button" class="btn btn-primary btn-xs">等人数拆分</button>　　合计：100%</td>
                 </tr>
                 <tr>
                     <td>备注：</td>
-                    <td colspan="3" class="textareaBox_padding">
+                    <td colspan="3">
                         <textarea name="textarea" rows="2" class="form-control" style="resize:none;"></textarea>
                     </td>
                 </tr>

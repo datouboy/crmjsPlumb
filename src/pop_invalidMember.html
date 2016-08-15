@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet" />
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/marketingplanPopHtml.css">
+</head>
+
+<body>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" id="myTabs">
+        <li class="active"><a href="#setup" data-toggle="tab">设置</a></li>
+        <li><a href="#member" data-toggle="tab">客户预览</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="setup">
+        <!-- setup start -->
+            <div>
+                <table cellpadding="0" cellspacing="0" class="tableBox">
+                    <tbody>
+                        <tr>
+                            <td>目标客户组名称：</td>
+                            <td><input type="text" class="form-control input-sm" name="groupName" maxlength="30"></td>
+                            <td>目标客户组代码：</td>
+                            <td><input type="text" class="form-control input-sm" name="groupCode"></td>
+                        </tr>
+                        <tr>
+                            <td>已发短信过滤：</td>
+                            <td colspan="3" class="form-inline">
+                                <select class="form-control input-sm" name="smsFilter">
+                                    <option value="0">不过滤</option>
+                                    <option value="1">今天</option>
+                                    <option value="3">近3天</option>
+                                    <option value="7">近7天</option>
+                                    <option value="15">近15天</option>
+                                </select>
+                                <span>发过的短信不发</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>过滤条件:</td>
+                            <td colspan="3">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="rateFilter" value="option1">中差评
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>控制组人数：</td>
+                            <td colspan="3">
+                                <div class="form-inline">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="controlGroup" value="0" checked="checked"> 百分比
+                                    </label>
+                                    <span><input type="text" class="form-control input-sm" name="controlPen">&nbsp;%</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <label class="radio-inline">
+                                        <input type="radio" name="controlGroup" value="1" checked="checked"> 人数
+                                    </label>
+                                    <span><input type="text" class="form-control input-sm" name="controlNum">&nbsp;人</span>
+                                </div>                
+                                <div class="infoList bg-info">
+                                    <ul>
+                                        <li>控制组人数</li>
+                                        <li>控制不发短信的人数</li>
+                                        <li>如：满足条件 100 人，控制组人数 20 人，则实际会发送 80 人。</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>备注：</td>
+                            <td colspan="3" class="textareaBox_padding">
+                                <textarea name="textarea" rows="2" class="form-control" style="resize:none;"></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="modal-footer modal-footer-add">
+                    <button type="button" class="btn btn-default" id="popClose">关闭</button>
+                    <button type="button" class="btn btn-primary" id="popSace">确认</button>
+                </div>
+            </div>
+        <!-- setup end -->
+        </div>
+        <div class="tab-pane fade" id="member">
+        jquery Table
+        </div>
+    </div>
+    <script type="text/javascript">
+    $(function($) {
+        $("#popClose").click(function() {
+            window.parent.closeModalPop();
+        })
+        $("#popSace").click(function() {
+                window.parent.closeModalPop();
+                window.parent.modifyTaskIconText("jsPlumb_0", $("#taskIconText").val());
+            })
+            //如果有其它JS，此语句放在最后执行
+            //$('#popIframeBox',window.parent.document).css({height:$("#title_TimeBOX").css("height")});
+        setTimeout(function() {
+            $('#popIframeBox', window.parent.document).css({
+                height: $(document.body).height()
+            });
+        }, 100);
+    });
+    </script>
+</body>
+
+</html>

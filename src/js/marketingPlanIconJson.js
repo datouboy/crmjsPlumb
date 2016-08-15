@@ -8,7 +8,7 @@ var marketingPlanIconJson = [
 				"class" : "start",
 				"type" : "start",
 				"sourceList" : false,
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_start.html"
 			},
 			{
 				"title" : "等待时间",
@@ -75,7 +75,7 @@ var marketingPlanIconJson = [
 					"validMember","invalidMember",
 					"reportActivity","luckyMoneyActivity"
 				],
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_split.html"
 			},
 			{
 				"title" : "合并",
@@ -87,7 +87,7 @@ var marketingPlanIconJson = [
 					"validMember","invalidMember",
 					"reportActivity","luckyMoneyActivity"
 				],
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_merge.html"
 			},
 			{
 				"title" : "交集",
@@ -99,7 +99,7 @@ var marketingPlanIconJson = [
 					"validMember","invalidMember",
 					"reportActivity","luckyMoneyActivity"
 				],
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_intersection.html"
 			},
 			{
 				"title" : "排除",
@@ -111,7 +111,7 @@ var marketingPlanIconJson = [
 					"validMember","invalidMember",
 					"reportActivity","luckyMoneyActivity"
 				],
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_exclude.html"
 			},
 			{
 				"title" : "排重",
@@ -123,7 +123,7 @@ var marketingPlanIconJson = [
 					"validMember","invalidMember",
 					"reportActivity","luckyMoneyActivity"
 				],
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_noRepeat.html"
 			}
 		]
 	},
@@ -178,7 +178,7 @@ var marketingPlanIconJson = [
 					"sms","edm","luckyMoney",
 					"reportActivity","luckyMoneyActivity"
 				],
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_validMember.html"
 			},
 			{
 				"title" : "未响应客户",
@@ -188,7 +188,7 @@ var marketingPlanIconJson = [
 					"sms","edm","luckyMoney",
 					"reportActivity","luckyMoneyActivity"
 				],
-				"popUrl" : "pop_time.html"
+				"popUrl" : "pop_invalidMember.html"
 			}
 		]
 	},

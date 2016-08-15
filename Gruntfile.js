@@ -11,14 +11,14 @@ module.exports = function(grunt) {
               src: 'src/<%= pkg.name %>.js',
               dest: 'build/<%= pkg.name %>.min.js'
             }*/
-            builda: { //任务一
+            buildDest: { //任务一
                 options: {
                     report: "min"
                 },
                 files: {
                     'dest/js/marketingPlan.min.js': ['src/js/marketingPlan.js']
                 }
-            },
+            }
         },
         less: {
             production: {
@@ -86,7 +86,7 @@ module.exports = function(grunt) {
                 },
             },
             js: {
-                files: ['src/js/*Demo.js', 'src/js/marketingPlanIconJson.js'],
+                files: ['src/js/*.js', '!src/js/marketingPlan.js'],
                 tasks: ['copy:js', 'clean'],
                 options: {
                     spawn: false,

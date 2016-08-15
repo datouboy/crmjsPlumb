@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet" />
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/marketingplanPopHtml.css">
+</head>
+
+<body>
+    <div class="title_TimeBOX">
+        <div class="popTaskName">
+            <dl>
+                <dt>节点名：</dt>
+                <dd><input type="text" class="form-control input-sm" id="taskIconText" maxlength="30"></dd>
+            </dl>
+            <span class="right">节点ID : 123123</span>
+        </div>
+        <table cellpadding="0" cellspacing="0" class="tableBox">
+            <tbody>
+                <tr id="markLine01">
+                    <td rowspan="2" width="110">
+                        <label class="radio-inline">
+                            <input type="radio" name="optionsRadiosMain" value="option3"> 一次性执行
+                        </label>
+                    </td>
+                    <td colspan="2">
+                        <label class="radio-inline">
+                            <input type="radio" name="inlineRadioOptionsOnce" value="now"> 即时执行 </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="inlineRadioOptionsOnce" value="time"> 定期执行 </label>
+                    </td>
+                </tr>
+                <tr class="form-inline">
+                    <td colspan="2">
+                        开始时间：<input type="text" class="form-control input-sm">
+                    </td>
+                </tr>
+                <tr id="markLine03">
+                    <td rowspan="5">
+                        <label class="radio-inline">
+                            <input type="radio" name="optionsRadiosMain" value="option2"> 周期性执行
+                        </label>
+                    </td>
+                    <td class="Periodicity_I" width="70">
+                        <label class="radio-inline">
+                            <input type="radio" name="optionsRadios_00" id="optionsRadios2" value="cycleDay" data-value="1" checked="checked"> 每天 
+                        </label>
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr id="markLine04">
+                    <td class="Periodicity_I">
+                        <label class="radio-inline">
+                            <input type="radio" name="optionsRadios_00" id="optionsRadios2" value="cycleWeek" data-value="2"> 每周 
+                        </label>
+                    </td>
+                    <td id="weekBoxId">
+                        <div class="weekly_box">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox1" name="inlineCheckbox1" data-value="0"> 星期日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox2" name="inlineCheckbox1" data-value="1"> 星期一 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox3" name="inlineCheckbox1" data-value="2"> 星期二 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox4" name="inlineCheckbox1" data-value="3"> 星期三 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox5" name="inlineCheckbox1" data-value="4"> 星期四 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox6" name="inlineCheckbox1" data-value="5"> 星期五 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox7" name="inlineCheckbox1" data-value="6"> 星期六 </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr id="markLine05">
+                    <td class="Periodicity_I">
+                        <label class="radio-inline">
+                            <input type="radio" name="optionsRadios_00" id="optionsRadios2" value="cycleMonth" data-value="3"> 每月 
+                        </label>
+                    </td>
+                    <td id="monthBoxId">
+                        <div class="perMonth_box">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox1" name="inlineCheckbox2" data-value="1"> 1日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox2" name="inlineCheckbox2" data-value="2"> 2日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox3" name="inlineCheckbox2" data-value="3"> 3日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox4" name="inlineCheckbox2" data-value="4"> 4日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox5" name="inlineCheckbox2" data-value="5"> 5日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox6" name="inlineCheckbox2" data-value="6"> 6日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox7" name="inlineCheckbox2" data-value="7"> 7日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox8" name="inlineCheckbox2" data-value="8"> 8日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox9" name="inlineCheckbox2" data-value="9"> 9日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox10" name="inlineCheckbox2" data-value="10"> 10日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox11" name="inlineCheckbox2" data-value="11"> 11日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox12" name="inlineCheckbox2" data-value="12"> 12日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox13" name="inlineCheckbox2" data-value="13"> 13日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox14" name="inlineCheckbox2" data-value="14"> 14日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox15" name="inlineCheckbox2" data-value="15"> 15日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox16" name="inlineCheckbox2" data-value="16"> 16日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox17" name="inlineCheckbox2" data-value="17"> 17日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox18" name="inlineCheckbox2" data-value="18"> 18日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox19" name="inlineCheckbox2" data-value="19"> 19日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox20" name="inlineCheckbox2" data-value="20"> 20日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox21" name="inlineCheckbox2" data-value="21"> 21日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox22" name="inlineCheckbox2" data-value="22"> 22日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox23" name="inlineCheckbox2" data-value="23"> 23日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox24" name="inlineCheckbox2" data-value="24"> 24日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox25" name="inlineCheckbox2" data-value="25"> 25日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox26" name="inlineCheckbox2" data-value="26"> 26日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox27" name="inlineCheckbox2" data-value="27"> 27日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox28" name="inlineCheckbox2" data-value="28"> 28日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox29" name="inlineCheckbox2" data-value="29"> 29日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox30" name="inlineCheckbox2" data-value="30"> 30日 </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="inlineCheckbox31" name="inlineCheckbox2" data-value="31"> 31日 </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr id="markLine06">
+                    <td colspan="2" class="form-inline">
+                        开始日期：<input type="text" class="form-control input-sm">
+                    </td>
+                </tr>
+                <tr id="markLine07">
+                    <td colspan="2" class="form-inline">
+                        结束日期：<input type="text" class="form-control input-sm">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="modal-footer modal-footer-add">
+            <button type="button" class="btn btn-default" id="popClose">关闭</button>
+            <button type="button" class="btn btn-primary" id="popSace">确认</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $(function($) {
+        $("#popClose").click(function() {
+            window.parent.closeModalPop();
+        })
+        $("#popSace").click(function() {
+                window.parent.closeModalPop();
+                window.parent.modifyTaskIconText("jsPlumb_0", $("#taskIconText").val());
+            })
+            //如果有其它JS，此语句放在最后执行
+            //$('#popIframeBox',window.parent.document).css({height:$("#title_TimeBOX").css("height")});
+        setTimeout(function() {
+            $('#popIframeBox', window.parent.document).css({
+                height: $(document.body).height()
+            });
+        }, 100);
+    });
+    </script>
+</body>
+
+</html>
