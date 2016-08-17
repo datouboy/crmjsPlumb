@@ -868,6 +868,15 @@ AlexJsPlumb.prototype = {
 	},
 	editIconAjax : function(data,num){
 		var _slef = this;
+		data.icon_ID = typeof(data.icon_ID) == "undefined" ? _slef.jsPlumbJson[num].ID : data.icon_ID;
+		data.icon_state = typeof(data.icon_state) == "undefined" ? _slef.jsPlumbJson[num].state : data.icon_state;
+		data.icon_left = typeof(data.icon_left) == "undefined" ? _slef.jsPlumbJson[num].left : data.icon_left;
+		data.icon_top = typeof(data.icon_top) == "undefined" ? _slef.jsPlumbJson[num].top : data.icon_top;
+		data.icon_text = typeof(data.icon_text) == "undefined" ? _slef.jsPlumbJson[num].text : data.icon_text;
+		data.icon_targetId = typeof(data.icon_targetId) == "undefined" ? _slef.jsPlumbJson[num].targetId : data.icon_targetId;
+		data.icon_taskID = typeof(data.icon_taskID) == "undefined" ? _slef.jsPlumbJson[num].taskID : data.icon_taskID;
+		data.icon_type = typeof(data.icon_type) == "undefined" ? _slef.jsPlumbJson[num].type : data.icon_type;
+		data.icon_userNum = typeof(data.icon_userNum) == "undefined" ? _slef.jsPlumbJson[num].userNum : data.icon_userNum;
 		$.ajax({
 			type: _slef.ajaxType,
 			url: _slef.editIconApi+"?timeStamp=" + new Date().getTime(),
