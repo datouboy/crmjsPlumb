@@ -1,22 +1,26 @@
 'use strict';
 module.exports = function(grunt) {
+    require('time-grunt')(grunt);
+    require('load-grunt-tasks')(grunt);
+
+    var config = {
+        src : "src",
+        dest : "dest",
+    }
 
     grunt.initConfig({
+        config : config,
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
             options: {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> by <%= pkg.author %> */\n'
             },
-            /*build: {
-              src: 'src/<%= pkg.name %>.js',
-              dest: 'build/<%= pkg.name %>.min.js'
-            }*/
             buildDest: { //任务一
                 options: {
                     report: "min"
                 },
                 files: {
-                    'dest/js/marketingPlan.min.js': ['src/js/marketingPlan.js']
+                    '<%= config.dest %>/js/marketingPlan.min.js': ['<%= config.src %>/js/marketingPlan.js']
                 }
             }
         },
@@ -30,55 +34,55 @@ module.exports = function(grunt) {
                     ]
                 },
                 files: {
-                    'dest/css/marketingplan.css': 'src/css/marketingplan.less'
+                    '<%= config.dest %>/css/marketingplan.css': '<%= config.src %>/css/marketingplan.less'
                 }
             }
         },
         copy: {
             main: {
                 files: [
-                    { expand: true, cwd: 'src/', src: ['*.html'], dest: 'dest/', filter: 'isFile' },
-                    { expand: true, cwd: 'src/css/', src: ['*.css'], dest: 'dest/css/', filter: 'isFile' },
-                    { expand: true, cwd: 'src/js/', src: ['**'], dest: 'dest/js/' },
-                    { expand: true, cwd: 'src/font/', src: ['**'], dest: 'dest/font/' },
-                    { expand: true, cwd: 'src/images/', src: ['**'], dest: 'dest/images/' },
+                    { expand: true, cwd: '<%= config.src %>/', src: ['*.html'], dest: '<%= config.dest %>/', filter: 'isFile' },
+                    { expand: true, cwd: '<%= config.src %>/css/', src: ['*.css'], dest: '<%= config.dest %>/css/', filter: 'isFile' },
+                    { expand: true, cwd: '<%= config.src %>/js/', src: ['**'], dest: '<%= config.dest %>/js/' },
+                    { expand: true, cwd: '<%= config.src %>/font/', src: ['**'], dest: '<%= config.dest %>/font/' },
+                    { expand: true, cwd: '<%= config.src %>/images/', src: ['**'], dest: '<%= config.dest %>/images/' },
                 ]
             },
             html: {
                 files: [
-                    { expand: true, cwd: 'src/', src: ['*.html'], dest: 'dest/', filter: 'isFile' }
+                    { expand: true, cwd: '<%= config.src %>/', src: ['*.html'], dest: '<%= config.dest %>/', filter: 'isFile' }
                 ]
             },
             css: {
                 files: [
-                    { expand: true, cwd: 'src/css/', src: ['*.css'], dest: 'dest/css/', filter: 'isFile' }
+                    { expand: true, cwd: '<%= config.src %>/css/', src: ['*.css'], dest: '<%= config.dest %>/css/', filter: 'isFile' }
                 ]
             },
             images: {
                 files: [
-                    { expand: true, cwd: 'src/images/', src: ['**'], dest: 'dest/images/' }
+                    { expand: true, cwd: '<%= config.src %>/images/', src: ['**'], dest: '<%= config.dest %>/images/' }
                 ]
             },
             js: {
                 files: [
-                    { expand: true, cwd: 'src/js/', src: ['**'], dest: 'dest/js/' }
+                    { expand: true, cwd: '<%= config.src %>/js/', src: ['**'], dest: '<%= config.dest %>/js/' }
                 ]
             }
         },
         clean: {
-            scripts: ['dest/js/marketingPlan.js']
+            scripts: ['<%= config.dest %>/js/marketingPlan.js']
         },
         connect: {
             server: {
                 options: {
                     port: 9090,
-                    base: 'dest'
+                    base: '<%= config.dest %>'
                 }
             }
         },
         watch: {
             scripts: {
-                files: ['src/js/marketingPlan.js'],
+                files: ['<%= config.src %>/js/marketingPlan.js'],
                 tasks: ['uglify'],
                 options: {
                     spawn: false,
@@ -86,7 +90,7 @@ module.exports = function(grunt) {
                 },
             },
             js: {
-                files: ['src/js/*.js', '!src/js/marketingPlan.js'],
+                files: ['<%= config.src %>/js/*.js', '!<%= config.src %>/js/marketingPlan.js'],
                 tasks: ['copy:js', 'clean'],
                 options: {
                     spawn: false,
@@ -94,28 +98,28 @@ module.exports = function(grunt) {
                 },
             },
             less: {
-                files: ['src/css/marketingplan.less'],
+                files: ['<%= config.src %>/css/marketingplan.less'],
                 tasks: ['less'],
                 options: {
                     livereload: true,
                 },
             },
             css: {
-                files: ['src/css/*.css'],
+                files: ['<%= config.src %>/css/*.css'],
                 tasks: ['copy:css'],
                 options: {
                     livereload: true,
                 },
             },
             html: {
-                files: ['src/*.html'],
+                files: ['<%= config.src %>/*.html'],
                 tasks: ['copy:html'],
                 options: {
                     livereload: true,
                 },
             },
             images :{
-                files: ['src/images/**'],
+                files: ['<%= config.src %>/images/**'],
                 tasks: ['copy:images'],
                 options: {
                     livereload: true,
@@ -124,7 +128,7 @@ module.exports = function(grunt) {
         },
     });
 
-    // 加载JS压缩插件。
+    /*// 加载JS压缩插件。
     grunt.loadNpmTasks('grunt-contrib-uglify');
     // 加载Less编译插件
     grunt.loadNpmTasks('grunt-contrib-less');
@@ -135,7 +139,7 @@ module.exports = function(grunt) {
     // 加载测试服务器插件
     grunt.loadNpmTasks('grunt-contrib-connect');
     // 加载实时监听内容改变插件
-    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-watch');*/
 
     // 默认被执行的任务列表。
     grunt.registerTask('default', ['copy:main', 'clean', 'uglify', 'less']);
