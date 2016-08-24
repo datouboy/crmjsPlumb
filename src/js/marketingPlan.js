@@ -147,6 +147,7 @@ AlexJsPlumb.prototype = {
 				obj_li.title = marketingPlanIconJson[i].marketingFun[j].title;
 				obj_li.class = "addJsPlumb " + marketingPlanIconJson[i].class + " " + marketingPlanIconJson[i].marketingFun[j].class;
 				obj_li.type = marketingPlanIconJson[i].marketingFun[j].type;
+				obj_li.parentClass = marketingPlanIconJson[i].class;
 				obj.iconList += this.substitute(this.marketingPlanIconTemplate_Li,obj_li)
 			}
 
@@ -228,7 +229,7 @@ AlexJsPlumb.prototype = {
 				clientX: e.clientX,
 				clientY: e.clientY
 			}
-			var html = "<div id=\"iconMove\" class=\"" + $(this).attr("class") + "\" style=\"" + top+left + "\" data-type=\"" + $(this).attr("data-type") + "\">"+ $(this).text(); +"</div>";
+			var html = "<div id=\"iconMove\" class=\"" + $(this).attr("class") + "\" style=\"" + top+left + "\" data-type=\"" + $(this).attr("data-type") + "\" data-parent-class=\"" + $(this).attr("data-parent-class") + "\">"+ $(this).text(); +"</div>";
 			$('#leftIconCopy').html(html);
 		})
 		$(window).mousemove(function(e){
@@ -261,6 +262,7 @@ AlexJsPlumb.prototype = {
 									clientX: e.clientX - $(this.jsPlumbBox).offset().left - 25,
 									clientY: e.clientY - $(this.jsPlumbBox).offset().top - 25,
 									type: $("#iconMove").attr("data-type"),
+									parentClass: $("#iconMove").attr("data-parent-class"),
 									text: $("#iconMove").text()
 								}
 								if($("#iconMove").attr("data-type") == "start"){
@@ -563,6 +565,7 @@ AlexJsPlumb.prototype = {
 		//添加连接线
 		var num = 0;
 		this.connectArray = [];
+		//console.log(this.jsPlumbJson);
 		for(var i=0; i<this.jsPlumbJson.length; i++){
 			if(this.jsPlumbJson[i].targetId.length > 0){
 				for(var j=0; j<this.jsPlumbJson[i].targetId.length; j++){
@@ -604,6 +607,7 @@ AlexJsPlumb.prototype = {
 				"userID": this.userID,//用户ID
 				"icon_ID" : this.jsPlumbJson[num].ID,//节点IconID
 				"icon_type" : this.jsPlumbJson[num].type,
+				"icon_parentClass" : this.jsPlumbJson[num].parentClass,
 				"icon_text" : this.jsPlumbJson[num].text,
 				"icon_left": this.jsPlumbJson[num].left,
 				"icon_top": this.jsPlumbJson[num].top
@@ -648,7 +652,7 @@ AlexJsPlumb.prototype = {
 			$("#myModal").modal('show');
 			$("#myModalLabel").html("节点编辑: " + $(this).children("h5").text() + " <span style=\"font-size:12px;color:#d9d9d9;\">(" + _slef.iconTypeToClass[$(this).attr("data-type")].title + ")</span>");
 			var obj = {};
-			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "&timeStamp=" + new Date().getTime();
+			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&iconID=" + $(this).attr("id") + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "&timeStamp=" + new Date().getTime();
 			$("#myModalBody").html(_slef.substitute(_slef.iframeBox,obj));
 			//$("#myModalBody").html(_slef.substitute(marketingPlanPopHtml[$(this).attr("data-type")].html,obj));
 		})
@@ -868,6 +872,7 @@ AlexJsPlumb.prototype = {
 	},
 	editIconAjax : function(data,num){
 		var _slef = this;
+		console.log(num);
 		data.icon_ID = typeof(data.icon_ID) == "undefined" ? _slef.jsPlumbJson[num].ID : data.icon_ID;
 		data.icon_state = typeof(data.icon_state) == "undefined" ? _slef.jsPlumbJson[num].state : data.icon_state;
 		data.icon_left = typeof(data.icon_left) == "undefined" ? _slef.jsPlumbJson[num].left : data.icon_left;
@@ -876,7 +881,12 @@ AlexJsPlumb.prototype = {
 		data.icon_targetId = typeof(data.icon_targetId) == "undefined" ? _slef.jsPlumbJson[num].targetId : data.icon_targetId;
 		data.icon_taskID = typeof(data.icon_taskID) == "undefined" ? _slef.jsPlumbJson[num].taskID : data.icon_taskID;
 		data.icon_type = typeof(data.icon_type) == "undefined" ? _slef.jsPlumbJson[num].type : data.icon_type;
+		data.icon_parentClass = typeof(data.icon_parentClass) == "undefined" ? _slef.jsPlumbJson[num].parentClass : data.icon_parentClass;
 		data.icon_userNum = typeof(data.icon_userNum) == "undefined" ? _slef.jsPlumbJson[num].userNum : data.icon_userNum;
+
+		if(data.icon_targetId != null){
+			data.icon_targetId = JSON.stringify(data.icon_targetId);
+		}
 		$.ajax({
 			type: _slef.ajaxType,
 			url: _slef.editIconApi+"?timeStamp=" + new Date().getTime(),
@@ -908,7 +918,8 @@ AlexJsPlumb.prototype = {
 			var jsPlumbObj = this.jsPlumbJson[i];
 		}else{//新加Icon
 			var jsPlumbObj = {
-				"ID" : "jsPlumb_"+new Date().getTime(),
+				"ID" : "jsPlumb_" + new Date().getTime(),
+				"parentClass" : clientObj.parentClass,
 				"taskID" : null,
 				"type" : clientObj.type,
 				"text" : clientObj.text,
@@ -929,6 +940,7 @@ AlexJsPlumb.prototype = {
 	    obj.class = "jsPlumbIcon " + this.iconTypeToClass[jsPlumbObj.type].class + " jtk-node"+jsPlumbObj.name+" new-"+jsPlumbObj.name;
 	    obj.id = chartID;
 	    obj.dataType = jsPlumbObj.type;
+		obj.parentClass = jsPlumbObj.parentClass
 	    obj.dataTaskID = jsPlumbObj.taskID;
 	    obj.text = jsPlumbObj.text;
 	    obj.userNum = jsPlumbObj.userNum;
@@ -979,6 +991,11 @@ AlexJsPlumb.prototype = {
 		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.endpointSourceArray[this.iconSourceArray[id]]);
 		this.instanceArray[this.instanceArray.length-1].deleteEndpoint(this.targetSourceArray[this.iconSourceArray[id]]);
 		this.instanceArray[this.instanceArray.length-1].remove(id);
+	},
+	//完全初始化页面（Ajax读取初始化数据）
+	restartJsPlumbInit : function() {
+		this.removeAllJsPlumb();
+		this.jsPlumbInit();
 	},
 	//预执行通讯
 	marketingPlanTest : function(){
@@ -1092,11 +1109,11 @@ AlexJsPlumb.prototype = {
         "</ul>",
     ].join(""),
     marketingPlanIconTemplate_Li : [
-        "<li class=\"{class}\" data-type=\"{type}\">{title}</li>",
+        "<li class=\"{class}\" data-type=\"{type}\" data-parent-class=\"{parentClass}\">{title}</li>",
     ].join(""),
     //节点Icon模版
     iconTemplate : [
-    	"<div class=\"{class}\" id=\"{id}\" data-type=\"{dataType}\" data-taskID=\"{dataTaskID}\">",
+    	"<div class=\"{class}\" id=\"{id}\" data-type=\"{dataType}\" data-taskID=\"{dataTaskID}\" data-parent-class=\"{parentClass}\">",
     		"<h5>{text}</h5>",
     		"<div class=\"userNum\">{userNum}</div>",
     		"<div class=\"mask\"></div>",

@@ -15,7 +15,18 @@ module.exports = function(grunt) {
             options: {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> by <%= pkg.author %> */\n'
             },
-            buildDest: { //任务一
+            buildDest: {
+                options: {
+                    report: "min",
+                    compress: {
+                        drop_console: true
+                    }
+                },
+                files: {
+                    '<%= config.dest %>/js/marketingPlan.min.js': ['<%= config.src %>/js/marketingPlan.js']
+                }
+            },
+            buildLive: {
                 options: {
                     report: "min"
                 },
@@ -83,7 +94,7 @@ module.exports = function(grunt) {
         watch: {
             scripts: {
                 files: ['<%= config.src %>/js/marketingPlan.js'],
-                tasks: ['uglify'],
+                tasks: ['uglify:buildLive'],
                 options: {
                     spawn: false,
                     livereload: true//即时更新至浏览器
@@ -142,7 +153,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');*/
 
     // 默认被执行的任务列表。
-    grunt.registerTask('default', ['copy:main', 'clean', 'uglify', 'less']);
+    grunt.registerTask('default', ['copy:main', 'clean', 'uglify:buildDest', 'less']);
     // 调试服务器
     grunt.registerTask('live', ['connect', 'watch']);
 };
