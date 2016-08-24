@@ -148,7 +148,9 @@ AlexJsPlumb.prototype = {
 				obj_li.class = "addJsPlumb " + marketingPlanIconJson[i].class + " " + marketingPlanIconJson[i].marketingFun[j].class;
 				obj_li.type = marketingPlanIconJson[i].marketingFun[j].type;
 				obj_li.parentClass = marketingPlanIconJson[i].class;
-				obj.iconList += this.substitute(this.marketingPlanIconTemplate_Li,obj_li)
+				if(marketingPlanIconJson[i].marketingFun[j].show){
+					obj.iconList += this.substitute(this.marketingPlanIconTemplate_Li,obj_li)
+				}
 			}
 
 			$("#marketingPlanIconBox").append(this.substitute(this.marketingPlanIconTemplate_Ul,obj));

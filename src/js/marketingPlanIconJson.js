@@ -7,6 +7,7 @@ var marketingPlanIconJson = [
 				"title" : "开始时间",
 				"class" : "start",
 				"type" : "start",
+				"show" : true,
 				"sourceList" : false,
 				"popUrl" : "pop_start.html"
 			},
@@ -14,6 +15,7 @@ var marketingPlanIconJson = [
 				"title" : "等待时间",
 				"class" : "time",
 				"type" : "time",
+				"show" : true,
 				"sourceList" : true,
 				"popUrl" : "pop_time.html"
 			}
@@ -27,6 +29,7 @@ var marketingPlanIconJson = [
 				"title" : "根据交易记录",
 				"class" : "dealSearch",
 				"type" : "dealSearch",
+				"show" : true,
 				"sourceList" : [
 					"start","time"
 				],
@@ -36,6 +39,7 @@ var marketingPlanIconJson = [
 				"title" : "根据订单状态",
 				"class" : "orderSearch",
 				"type" : "orderSearch",
+				"show" : true,
 				"sourceList" : [
 					"start","time"
 				],
@@ -45,6 +49,7 @@ var marketingPlanIconJson = [
 				"title" : "根据会员分组",
 				"class" : "groupSearch",
 				"type" : "groupSearch",
+				"show" : true,
 				"sourceList" : [
 					"start","time"
 				],
@@ -54,6 +59,7 @@ var marketingPlanIconJson = [
 				"title" : "手动添加",
 				"class" : "manualSearch",
 				"type" : "manualSearch",
+				"show" : true,
 				"sourceList" : [
 					"start","time"
 				],
@@ -69,6 +75,7 @@ var marketingPlanIconJson = [
 				"title" : "拆分",
 				"class" : "split",
 				"type" : "split",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -81,6 +88,7 @@ var marketingPlanIconJson = [
 				"title" : "合并",
 				"class" : "merge",
 				"type" : "merge",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -93,6 +101,7 @@ var marketingPlanIconJson = [
 				"title" : "交集",
 				"class" : "intersection",
 				"type" : "intersection",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -105,6 +114,7 @@ var marketingPlanIconJson = [
 				"title" : "排除",
 				"class" : "exclude",
 				"type" : "exclude",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -117,6 +127,7 @@ var marketingPlanIconJson = [
 				"title" : "排重",
 				"class" : "noRepeat",
 				"type" : "noRepeat",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -124,6 +135,19 @@ var marketingPlanIconJson = [
 					"reportActivity","luckyMoneyActivity"
 				],
 				"popUrl" : "pop_noRepeat.html"
+			},
+			{
+				"title" : "结果",
+				"class" : "results",
+				"type" : "results",
+				"show" : false,
+				"sourceList" : [
+					"dealSearch","orderSearch","groupSearch","manualSearch",
+					"split","merge","intersection","exclude","noRepeat",
+					"validMember","invalidMember",
+					"reportActivity","luckyMoneyActivity"
+				],
+				"popUrl" : "pop_results.html"
 			}
 		]
 	},
@@ -135,6 +159,7 @@ var marketingPlanIconJson = [
 				"title" : "短信",
 				"class" : "sms",
 				"type" : "sms",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -146,6 +171,7 @@ var marketingPlanIconJson = [
 				"title" : "邮件",
 				"class" : "edm",
 				"type" : "edm",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -157,6 +183,7 @@ var marketingPlanIconJson = [
 				"title" : "发红包",
 				"class" : "luckyMoney",
 				"type" : "luckyMoney",
+				"show" : true,
 				"sourceList" : [
 					"dealSearch","orderSearch","groupSearch","manualSearch",
 					"split","merge","intersection","exclude","noRepeat",
@@ -174,6 +201,7 @@ var marketingPlanIconJson = [
 				"title" : "响应客户",
 				"class" : "validMember",
 				"type" : "validMember",
+				"show" : true,
 				"sourceList" : [
 					"sms","edm","luckyMoney",
 					"reportActivity","luckyMoneyActivity"
@@ -184,6 +212,7 @@ var marketingPlanIconJson = [
 				"title" : "未响应客户",
 				"class" : "invalidMember",
 				"type" : "invalidMember",
+				"show" : true,
 				"sourceList" : [
 					"sms","edm","luckyMoney",
 					"reportActivity","luckyMoneyActivity"
@@ -200,6 +229,7 @@ var marketingPlanIconJson = [
 				"title" : "活动分析",
 				"class" : "reportActivity",
 				"type" : "reportActivity",
+				"show" : true,
 				"sourceList" : [
 					"sms","edm","luckyMoney",
 					"validMember","invalidMember"
@@ -210,6 +240,7 @@ var marketingPlanIconJson = [
 				"title" : "红包发送统计",
 				"class" : "luckyMoneyActivity",
 				"type" : "luckyMoneyActivity",
+				"show" : true,
 				"sourceList" : [
 					"sms","edm","luckyMoney",
 					"validMember","invalidMember"

@@ -109,6 +109,42 @@
 			"left": 900,
 			"top": 150,
 			"userNum" : false
+		},
+		{
+			"ID" : "jsPlumb_9",
+			"taskID" : "jsPlumb_9_ttt",
+			"type" : "split",
+			"parentClass" : "filter",
+			"text" : "拆分",
+			"state" : 0,
+			"targetId" : ["jsPlumb_10","jsPlumb_11"],
+			"left" : 350,
+			"top" : 400,
+			"userNum" : false
+		},
+		{
+			"ID" : "jsPlumb_10",
+			"taskID" : "jsPlumb_10_ttt",
+			"type" : "results",
+			"parentClass" : "filter",
+			"text" : "拆分结果1",
+			"state" : 0,
+			"targetId" : [],
+			"left" : 550,
+			"top" : 350,
+			"userNum" : false
+		},
+		{
+			"ID" : "jsPlumb_11",
+			"taskID" : "jsPlumb_11_ttt",
+			"type" : "results",
+			"parentClass" : "filter",
+			"text" : "拆分结果2",
+			"state" : 0,
+			"targetId" : [],
+			"left" : 550,
+			"top" : 450,
+			"userNum" : false
 		}
 	]
 }
