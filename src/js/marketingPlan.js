@@ -7,7 +7,7 @@ AlexJsPlumb.prototype = {
 		this.userID = obj.userID;
 		//Ajax提交方式
 		this.ajaxType = obj.ajaxType;
-		//营销计划大任务编辑状态（状态由初始接口获取），0编辑状态，1预执行中，2预执行通过，3正式发送中
+		//营销计划大任务编辑状态（状态由初始接口获取），0编辑状态，1预执行中，2预执行通过，3正式发送中，4执行完成
 		this.marketingPlanEditState = 0;
 		//左侧菜单点击状态
 		this.mouseDownState = false;
@@ -267,7 +267,7 @@ AlexJsPlumb.prototype = {
 									parentClass: $("#iconMove").attr("data-parent-class"),
 									text: $("#iconMove").text()
 								}
-								if($("#iconMove").attr("data-type") == "start"){
+								if($("#iconMove").attr("data-type") == "Start"){
 									if(_slef.jsPlumbJson.length > 0){
 										_slef.mouseDownState = false;
 										_slef.leftIconOffset = false;
@@ -405,6 +405,11 @@ AlexJsPlumb.prototype = {
 			$("#goStart").addClass("menuOff");
 			$("#goRestart").attr({"data-menuoff":"open"});
 			$("#marketingPlanStateText").text("正式发送中");
+		}else if(State === 4){
+			$("#goTest").addClass("menuOff");
+			$("#goStart").addClass("menuOff");
+			$("#goRestart").addClass("menuOff");
+			$("#marketingPlanStateText").text("执行完成");
 		}
 	},
 	//流程测试、发送、重新设计按钮事件绑定
@@ -646,7 +651,7 @@ AlexJsPlumb.prototype = {
 			e.preventDefault();
 			e.stopPropagation();
 			//开始类型不用弹窗
-			/*if($(this).attr("data-type") == "start"){
+			/*if($(this).attr("data-type") == "Start"){
 				return false;
 			}*/
 			//console.log($(this).attr("data-type"),$(this).attr("data-taskid"));
@@ -654,7 +659,7 @@ AlexJsPlumb.prototype = {
 			$("#myModal").modal('show');
 			$("#myModalLabel").html("节点编辑: " + $(this).children("h5").text() + " <span style=\"font-size:12px;color:#d9d9d9;\">(" + _slef.iconTypeToClass[$(this).attr("data-type")].title + ")</span>");
 			var obj = {};
-			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&iconID=" + $(this).attr("id") + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "&timeStamp=" + new Date().getTime();
+			obj.url = _slef.iconTypeToClass[$(this).attr("data-type")].popUrl + "?taskID=" + _slef.taskID + "&icon_ID=" + $(this).attr("id") + "&userID=" + _slef.userID + "&icon_taskID=" + $(this).attr("data-taskid") + "&timeStamp=" + new Date().getTime();
 			$("#myModalBody").html(_slef.substitute(_slef.iframeBox,obj));
 			//$("#myModalBody").html(_slef.substitute(marketingPlanPopHtml[$(this).attr("data-type")].html,obj));
 		})
