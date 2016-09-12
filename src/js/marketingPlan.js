@@ -39,6 +39,8 @@ AlexJsPlumb.prototype = {
 		this.editIconApi = obj.editIconApi;
 		//预执行状态返回Api
 		this.marketingPlanTestApi = obj.marketingPlanTestApi;
+		//正式执行实时状态返回Api
+		this.implementPlanBackApi = obj.implementPlanBackApi;
 		//通知正式发送Api
 		this.formalSendApi = obj.formalSendApi;
 		//通知暂停发送，进入编辑状态Api
@@ -587,6 +589,8 @@ AlexJsPlumb.prototype = {
 		//预执行状态检测
 		if(this.marketingPlanEditState === 1){
 			this.marketingPlanTest();
+		}else if(this.marketingPlanEditState === 3){
+			this.implementPlanBack();
 		}
 	},
 	addNewJsPlumbIcon : function(clientObj){//添加新sPlumb Icon
@@ -1055,6 +1059,66 @@ AlexJsPlumb.prototype = {
 						_slef.marketingPlanEditState = 0;
 						_slef.showTestButton(0);
 						_slef.jsPlumbInstance();
+					}
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					alert('ajax通信出错');
+				}
+			});
+		}
+		timingFun();
+	},
+	//正式执行实时状态返回通讯
+	implementPlanBack : function(){
+		var _slef = this;
+		function timingFun(){
+			$.ajax({
+				type: _slef.ajaxType,
+				url: _slef.implementPlanBackApi+"?timeStamp=" + new Date().getTime(),
+				data: {
+					"taskID": _slef.taskID,
+					"userID": _slef.userID,
+					},
+				dataType: "json",
+				//async: false,
+				timeout: 20000,//20秒
+				beforeSend: function(){
+				},
+				success: function(msg){
+					if(msg.result){
+						//返回的msg.state有两种状态："executing":执行中，"end":预执行结束
+						if(msg.state == "executing"){
+							//console.log("更新节点:",msg.list,msg.state);
+							for(var i=0; i<msg.list.length; i++){
+								for(var j=0; j<_slef.jsPlumbJson.length; j++){
+									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
+										console.log(j,msg.list[i].ID);
+										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
+										break;
+									}
+								}
+							}
+							setTimeout(function(){
+								//执行结束后结束循环
+								if(_slef.marketingPlanEditState === 3){
+									timingFun();
+								}
+							},3000);
+						}else if(msg.state == "end"){
+							//预执行成功后更改状态
+							_slef.marketingPlanEditState = 4;
+							_slef.showTestButton(4);
+							_slef.bootstrapAlert("info", "通知！", "任务已完成!");
+							//console.log("预执行完成");
+						}
+					}else{
+						console.log(msg.error);
+						//alert(msg.error);
+						_slef.bootstrapAlert("warning", "警告！", msg.error);
+						//执行失败后，退回到编辑状态
+						/*_slef.marketingPlanEditState = 3;
+						_slef.showTestButton(3);
+						_slef.jsPlumbInstance();*/
 					}
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown){
