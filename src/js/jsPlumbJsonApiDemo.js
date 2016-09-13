@@ -1,6 +1,6 @@
 {
 	"result" : true,
-	"state" : 3,
+	"state" : 0,
 	"list" : [
 		{
 			"ID" : "jsPlumb_0",

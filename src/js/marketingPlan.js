@@ -179,6 +179,10 @@ AlexJsPlumb.prototype = {
 			 * 2，服务器反馈成功信息后，删除jsPlumbJson数组中对应数据
 			 * 3，删除页面Dom相关元素
 			 */
+			if($(this).attr("data-type") == "start"){
+				_slef.bootstrapAlert("warning", "警告！", "不可以删除开始节点！");
+				return false;
+			}
 			$.ajax({
 				type: _slef.ajaxType,
 				url: _slef.delIconApi+"?timeStamp=" + new Date().getTime(),
@@ -668,25 +672,27 @@ AlexJsPlumb.prototype = {
 			//$("#myModalBody").html(_slef.substitute(marketingPlanPopHtml[$(this).attr("data-type")].html,obj));
 		})
 		$(ID).mousedown(function(e){
-			_slef.mousedownClient = {
-				"mousedownX": e.clientX - $(this).offset().left,
-				"mousedownY": e.clientY - $(this).offset().top,
-				"left" : $(this).css("left"),
-				"top" : $(this).css("top")
-			}
-			$(_slef.jsPlumbBox).children(".jsPlumbIcon").css({"z-index":20});
-			$(this).css({"z-index":21});
-			//获取jsPlumbJson中对应的数组序号
-			var num;
-			for(var i=0; i<_slef.jsPlumbJson.length; i++) {
-				if($(this).attr("id") == _slef.jsPlumbJson[i].ID){
-					num = i;
-					break;
+			if(e.which == 1){//鼠标左键事件
+				_slef.mousedownClient = {
+					"mousedownX": e.clientX - $(this).offset().left,
+					"mousedownY": e.clientY - $(this).offset().top,
+					"left" : $(this).css("left"),
+					"top" : $(this).css("top")
 				}
+				$(_slef.jsPlumbBox).children(".jsPlumbIcon").css({"z-index":20});
+				$(this).css({"z-index":21});
+				//获取jsPlumbJson中对应的数组序号
+				var num;
+				for(var i=0; i<_slef.jsPlumbJson.length; i++) {
+					if($(this).attr("id") == _slef.jsPlumbJson[i].ID){
+						num = i;
+						break;
+					}
+				}
+				_slef.iconMouseDownState.state = true;
+				_slef.iconMouseDownState.num = num;
+				//$(this).css({cursor: "move"});
 			}
-			_slef.iconMouseDownState.state = true;
-			_slef.iconMouseDownState.num = num;
-			//$(this).css({cursor: "move"});
 		})
 		$(ID).mouseup(function(e){
 			if(e.which == 1) {//鼠标左键事件，用于捕捉Icon位移数据
@@ -736,7 +742,11 @@ AlexJsPlumb.prototype = {
 				e.stopPropagation();
 				$("#nodeIconDelMenu").show();
 				$("#nodeIconDelMenu").css({left:Math.round(e.clientX + $(window).scrollLeft())+"px", top:Math.round(e.clientY + $(window).scrollTop())+"px"});
-				$("#nodeIconDelMenu .delIcon").attr({"data-id":$(this).attr("id"), "data-taskid":$(this).attr("data-taskid")});
+				$("#nodeIconDelMenu .delIcon").attr({
+					"data-id":$(this).attr("id"),
+					"data-taskid":$(this).attr("data-taskid"),
+					"data-type":$(this).attr("data-type")
+				});
 			}
 		})
 		$(ID).mousemove(function(){
@@ -883,7 +893,7 @@ AlexJsPlumb.prototype = {
 	},
 	editIconAjax : function(data,num){
 		var _slef = this;
-		console.log(num);
+		//console.log("更新节点：jsPlumb_"+num);
 		data.icon_ID = typeof(data.icon_ID) == "undefined" ? _slef.jsPlumbJson[num].ID : data.icon_ID;
 		data.icon_state = typeof(data.icon_state) == "undefined" ? _slef.jsPlumbJson[num].state : data.icon_state;
 		data.icon_left = typeof(data.icon_left) == "undefined" ? _slef.jsPlumbJson[num].left : data.icon_left;
