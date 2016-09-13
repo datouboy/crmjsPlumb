@@ -1044,6 +1044,8 @@ AlexJsPlumb.prototype = {
 									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
 										console.log(j,msg.list[i].ID);
 										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
+										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").text(msg.list[i].userNum);
+										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").show();
 										break;
 									}
 								}
@@ -1104,6 +1106,8 @@ AlexJsPlumb.prototype = {
 									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
 										console.log(j,msg.list[i].ID);
 										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
+										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").text(msg.list[i].userNum);
+										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").show();
 										break;
 									}
 								}
