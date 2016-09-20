@@ -273,7 +273,13 @@ AlexJsPlumb.prototype = {
 									parentClass: $("#iconMove").attr("data-parent-class"),
 									text: $("#iconMove").text()
 								}
-								if($("#iconMove").attr("data-type") == "Start"){
+								var haveStart = false;
+								for(var i=0; i<_slef.jsPlumbJson.length; i++){
+									if(_slef.jsPlumbJson[i].type == "start"){
+										haveStart = true;
+									}
+								}
+								if($("#iconMove").attr("data-type") == "start" && haveStart){
 									if(_slef.jsPlumbJson.length > 0){
 										_slef.mouseDownState = false;
 										_slef.leftIconOffset = false;
