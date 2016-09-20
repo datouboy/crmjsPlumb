@@ -179,7 +179,7 @@ AlexJsPlumb.prototype = {
 			 * 2，服务器反馈成功信息后，删除jsPlumbJson数组中对应数据
 			 * 3，删除页面Dom相关元素
 			 */
-			if($(this).attr("data-type") == "start"){
+			if($(this).attr("data-type") == "Start"){
 				_slef.bootstrapAlert("warning", "警告！", "不可以删除开始节点！");
 				return false;
 			}
@@ -275,11 +275,11 @@ AlexJsPlumb.prototype = {
 								}
 								var haveStart = false;
 								for(var i=0; i<_slef.jsPlumbJson.length; i++){
-									if(_slef.jsPlumbJson[i].type == "start"){
+									if(_slef.jsPlumbJson[i].type == "Start"){
 										haveStart = true;
 									}
 								}
-								if($("#iconMove").attr("data-type") == "start" && haveStart){
+								if($("#iconMove").attr("data-type") == "Start" && haveStart){
 									if(_slef.jsPlumbJson.length > 0){
 										_slef.mouseDownState = false;
 										_slef.leftIconOffset = false;
@@ -405,7 +405,8 @@ AlexJsPlumb.prototype = {
 		}else if(State === 1){
 			$("#goTest").addClass("menuOff");
 			$("#goStart").addClass("menuOff");
-			$("#goRestart").addClass("menuOff");
+			// $("#goRestart").addClass("menuOff");
+			$("#goRestart").attr({"data-menuoff":"open"});
 			$("#marketingPlanStateText").text("预执行中");
 		}else if(State === 2){
 			$("#goTest").addClass("menuOff");
@@ -1043,40 +1044,51 @@ AlexJsPlumb.prototype = {
 				success: function(msg){
 					if(msg.result){
 						//返回的msg.state有两种状态："executing":预执行中，"end":预执行结束
-						if(msg.state == "executing"){
+						if(msg.state == "executing" || msg.state == "end"){
 							//console.log("更新节点:",msg.list,msg.state);
 							for(var i=0; i<msg.list.length; i++){
 								for(var j=0; j<_slef.jsPlumbJson.length; j++){
 									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
 										console.log(j,msg.list[i].ID);
 										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
-										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").text(msg.list[i].userNum);
-										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").show();
+										if(msg.list[i].userNum){
+											$("#"+_slef.jsPlumbJson[j].ID + " .userNum").text(msg.list[i].userNum);
+											$("#"+_slef.jsPlumbJson[j].ID + " .userNum").show();
+										}
 										break;
 									}
 								}
 							}
+							if(msg.error != undefined && msg.error != ''){
+								console.log(msg.error);
+								_slef.bootstrapAlert("warning", "警告！", msg.error);
+								return;
+							}
+
+							if(msg.state == "end"){
+								//预执行成功后更改状态
+								_slef.marketingPlanEditState = 2;
+								_slef.showTestButton(2);
+								_slef.bootstrapAlert("info", "通知！", "预执行成功!");
+								//console.log("预执行完成");
+								return;
+							}
+
 							setTimeout(function(){
 								//预执行结束后结束循环
 								if(_slef.marketingPlanEditState === 1){
 									timingFun();
 								}
 							},3000);
-						}else if(msg.state == "end"){
-							//预执行成功后更改状态
-							_slef.marketingPlanEditState = 2;
-							_slef.showTestButton(2);
-							_slef.bootstrapAlert("info", "通知！", "预执行成功!");
-							//console.log("预执行完成");
 						}
 					}else{
 						console.log(msg.error);
 						//alert(msg.error);
 						_slef.bootstrapAlert("warning", "警告！", msg.error);
 						//预执行失败后，退回到编辑状态
-						_slef.marketingPlanEditState = 0;
+						/*_slef.marketingPlanEditState = 0;
 						_slef.showTestButton(0);
-						_slef.jsPlumbInstance();
+						_slef.jsPlumbInstance();*/
 					}
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -1112,18 +1124,25 @@ AlexJsPlumb.prototype = {
 									if(msg.list[i].ID == _slef.jsPlumbJson[j].ID){
 										console.log(j,msg.list[i].ID);
 										$("#"+_slef.jsPlumbJson[j].ID).addClass("runOk");
-										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").text(msg.list[i].userNum);
-										$("#"+_slef.jsPlumbJson[j].ID + " .userNum").show();
+										if(msg.list[i].userNum){
+											$("#"+_slef.jsPlumbJson[j].ID + " .userNum").text(msg.list[i].userNum);
+											$("#"+_slef.jsPlumbJson[j].ID + " .userNum").show();
+										}
 										break;
 									}
 								}
 							}
-							setTimeout(function(){
-								//执行结束后结束循环
-								if(_slef.marketingPlanEditState === 3){
-									timingFun();
-								}
-							},3000);
+							if(msg.error != undefined && msg.error != ''){
+								console.log(msg.error);
+								_slef.bootstrapAlert("warning", "警告！", msg.error);
+							}else{
+								setTimeout(function(){
+									//执行结束后结束循环
+									if(_slef.marketingPlanEditState === 3){
+										timingFun();
+									}
+								},3000);
+							}
 						}else if(msg.state == "end"){
 							//预执行成功后更改状态
 							_slef.marketingPlanEditState = 4;

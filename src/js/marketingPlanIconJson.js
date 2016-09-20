@@ -6,7 +6,7 @@ var marketingPlanIconJson = [
 			{
 				"title" : "开始时间",
 				"class" : "start",
-				"type" : "start",
+				"type" : "Start",
 				"show" : true,
 				"sourceList" : false,
 				"popUrl" : "pop_start.html"
@@ -14,7 +14,7 @@ var marketingPlanIconJson = [
 			{
 				"title" : "等待时间",
 				"class" : "time",
-				"type" : "time",
+				"type" : "Time",
 				"show" : true,
 				"sourceList" : true,
 				"popUrl" : "pop_time.html"
@@ -28,40 +28,40 @@ var marketingPlanIconJson = [
 			{
 				"title" : "根据交易记录",
 				"class" : "dealSearch",
-				"type" : "dealSearch",
+				"type" : "MemberSearch",
 				"show" : true,
 				"sourceList" : [
-					"start","time"
+					"Start","Time"
 				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "根据订单状态",
 				"class" : "orderSearch",
-				"type" : "orderSearch",
+				"type" : "OrderSearch",
 				"show" : true,
 				"sourceList" : [
-					"start","time"
+					"Start","Time"
 				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "根据会员分组",
 				"class" : "groupSearch",
-				"type" : "groupSearch",
+				"type" : "GroupSearch",
 				"show" : true,
 				"sourceList" : [
-					"start","time"
+					"Start","Time"
 				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "手动添加",
 				"class" : "manualSearch",
-				"type" : "manualSearch",
+				"type" : "ManualSearch",
 				"show" : true,
 				"sourceList" : [
-					"start","time"
+					"Start","Time"
 				],
 				"popUrl" : "pop_time.html"
 			}
@@ -74,78 +74,78 @@ var marketingPlanIconJson = [
 			{
 				"title" : "拆分",
 				"class" : "split",
-				"type" : "split",
+				"type" : "Split",
 				"show" : true,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember",
-					"reportActivity","luckyMoneyActivity"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","merge","Intersection","Exclude","NoRepeat",
+					"ValidMember","InvalidMember",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_split.html"
 			},
 			{
 				"title" : "合并",
 				"class" : "merge",
-				"type" : "merge",
+				"type" : "Merge",
 				"show" : true,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember",
-					"reportActivity","luckyMoneyActivity"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","merge","Intersection","Exclude","NoRepeat",
+					"ValidMember","InvalidMember",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_merge.html"
 			},
 			{
 				"title" : "交集",
 				"class" : "intersection",
-				"type" : "intersection",
+				"type" : "Intersection",
 				"show" : true,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember",
-					"reportActivity","luckyMoneyActivity"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","merge","Intersection","Exclude","NoRepeat",
+					"ValidMember","InvalidMember",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_intersection.html"
 			},
 			{
 				"title" : "排除",
 				"class" : "exclude",
-				"type" : "exclude",
+				"type" : "Exclude",
 				"show" : true,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember",
-					"reportActivity","luckyMoneyActivity"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","merge","Intersection","Exclude","NoRepeat",
+					"ValidMember","InvalidMember",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_exclude.html"
 			},
 			{
 				"title" : "排重",
 				"class" : "noRepeat",
-				"type" : "noRepeat",
+				"type" : "NoRepeat",
 				"show" : true,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember",
-					"reportActivity","luckyMoneyActivity"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","merge","Intersection","Exclude","NoRepeat",
+					"ValidMember","InvalidMember",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_noRepeat.html"
 			},
 			{
 				"title" : "结果",
 				"class" : "results",
-				"type" : "results",
+				"type" : "Results",
 				"show" : false,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember",
-					"reportActivity","luckyMoneyActivity"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","merge","Intersection","Exclude","NoRepeat",
+					"ValidMember","InvalidMember",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_results.html"
 			}
@@ -158,36 +158,36 @@ var marketingPlanIconJson = [
 			{
 				"title" : "短信",
 				"class" : "sms",
-				"type" : "sms",
+				"type" : "Sms",
 				"show" : true,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","Merge","Intersection","Exclude","NoRepeat","Results",
+					"ValidMember","InvalidMember"
 				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "邮件",
 				"class" : "edm",
-				"type" : "edm",
+				"type" : "Email",
 				"show" : true,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","Merge","Intersection","Exclude","NoRepeat","Results",
+					"ValidMember","InvalidMember"
 				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "发红包",
 				"class" : "luckyMoney",
-				"type" : "luckyMoney",
-				"show" : true,
+				"type" : "LuckyMoney",
+				"show" : false,
 				"sourceList" : [
-					"dealSearch","orderSearch","groupSearch","manualSearch",
-					"split","merge","intersection","exclude","noRepeat",
-					"validMember","invalidMember"
+					"MemberSearch","OrderSearch","GroupSearch","ManualSearch",
+					"Split","Merge","Intersection","Exclude","NoRepeat","Results",
+					"ValidMember","InvalidMember"
 				],
 				"popUrl" : "pop_time.html"
 			}
@@ -200,22 +200,22 @@ var marketingPlanIconJson = [
 			{
 				"title" : "响应客户",
 				"class" : "validMember",
-				"type" : "validMember",
+				"type" : "ValidMember",
 				"show" : true,
 				"sourceList" : [
-					"sms","edm","luckyMoney",
-					"reportActivity","luckyMoneyActivity"
+					"Sms","Email","LuckyMoney",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_validMember.html"
 			},
 			{
 				"title" : "未响应客户",
 				"class" : "invalidMember",
-				"type" : "invalidMember",
+				"type" : "InvalidMember",
 				"show" : true,
 				"sourceList" : [
-					"sms","edm","luckyMoney",
-					"reportActivity","luckyMoneyActivity"
+					"Sms","Email","LuckyMoney",
+					"ReportActivity","LuckyMoneyActivity"
 				],
 				"popUrl" : "pop_invalidMember.html"
 			}
@@ -228,22 +228,22 @@ var marketingPlanIconJson = [
 			{
 				"title" : "活动分析",
 				"class" : "reportActivity",
-				"type" : "reportActivity",
+				"type" : "ReportActivity",
 				"show" : true,
 				"sourceList" : [
-					"sms","edm","luckyMoney",
-					"validMember","invalidMember"
+					"Sms","Email","LuckyMoney",
+					"ValidMember","InvalidMember"
 				],
 				"popUrl" : "pop_time.html"
 			},
 			{
 				"title" : "红包发送统计",
 				"class" : "luckyMoneyActivity",
-				"type" : "luckyMoneyActivity",
-				"show" : true,
+				"type" : "LuckyMoneyActivity",
+				"show" : false,
 				"sourceList" : [
-					"sms","edm","luckyMoney",
-					"validMember","invalidMember"
+					"Sms","Email","LuckyMoney",
+					"ValidMember","InvalidMember"
 				],
 				"popUrl" : "pop_time.html"
 			}

@@ -5,7 +5,7 @@
 		{
 			"ID" : "jsPlumb_0",
 			"taskID" : "jsPlumb_0_ttt",
-			"type" : "start",
+			"type" : "Start",
 			"parentClass" : "process",
 			"text" : "开始任务",
 			"state" : 1,
@@ -17,7 +17,7 @@
 		{
 			"ID" : "jsPlumb_1",
 			"taskID" : "jsPlumb_1_ttt",
-			"type" : "time",
+			"type" : "Time",
 			"parentClass" : "process",
 			"text" : "text1",
 			"state" : 1,
@@ -29,7 +29,7 @@
 		{
 			"ID" : "jsPlumb_2",
 			"taskID" : "jsPlumb_2_ttt",
-			"type" : "time",
+			"type" : "Time",
 			"parentClass" : "process",
 			"text" : "text2",
 			"state" : 0,
@@ -41,7 +41,7 @@
 		{
 			"ID" : "jsPlumb_3",
 			"taskID" : "jsPlumb_3_ttt",
-			"type" : "orderSearch",
+			"type" : "OrderSearch",
 			"parentClass" : "screen",
 			"text" : "text3",
 			"state" : 0,
@@ -53,7 +53,7 @@
 		{
 			"ID" : "jsPlumb_4",
 			"taskID" : "jsPlumb_4_ttt",
-			"type" : "orderSearch",
+			"type" : "OrderSearch",
 			"parentClass" : "screen",
 			"text" : "text4",
 			"state" : 0,
@@ -65,7 +65,7 @@
 		{
 			"ID" : "jsPlumb_5",
 			"taskID" : "jsPlumb_5_ttt",
-			"type" : "groupSearch",
+			"type" : "GroupSearch",
 			"parentClass" : "screen",
 			"text" : "text5",
 			"state" : 0,
@@ -77,7 +77,7 @@
 		{
 			"ID" : "jsPlumb_6",
 			"taskID" : "jsPlumb_6_ttt",
-			"type" : "manualSearch",
+			"type" : "ManualSearch",
 			"parentClass" : "screen",
 			"text" : "text6",
 			"state" : 0,
@@ -89,7 +89,7 @@
 		{
 			"ID" : "jsPlumb_7",
 			"taskID" : "jsPlumb_7_ttt",
-			"type" : "sms",
+			"type" : "Sms",
 			"parentClass" : "send",
 			"text" : "text7",
 			"state" : 0,
@@ -101,7 +101,7 @@
 		{
 			"ID" : "jsPlumb_8",
 			"taskID" : "jsPlumb_8_ttt",
-			"type" : "reportActivity",
+			"type" : "ReportActivity",
 			"parentClass" : "report",
 			"text" : "text8",
 			"state" : 0,
@@ -113,7 +113,7 @@
 		{
 			"ID" : "jsPlumb_9",
 			"taskID" : "jsPlumb_9_ttt",
-			"type" : "split",
+			"type" : "Split",
 			"parentClass" : "filter",
 			"text" : "拆分",
 			"state" : 0,
@@ -125,7 +125,7 @@
 		{
 			"ID" : "jsPlumb_10",
 			"taskID" : "jsPlumb_10_ttt",
-			"type" : "results",
+			"type" : "Results",
 			"parentClass" : "filter",
 			"text" : "拆分结果1",
 			"state" : 0,
@@ -137,7 +137,7 @@
 		{
 			"ID" : "jsPlumb_11",
 			"taskID" : "jsPlumb_11_ttt",
-			"type" : "results",
+			"type" : "Results",
 			"parentClass" : "filter",
 			"text" : "拆分结果2",
 			"state" : 0,
