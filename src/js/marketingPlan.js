@@ -721,8 +721,8 @@ AlexJsPlumb.prototype = {
 						"userID": _slef.userID,//用户ID
 						"icon_taskID" : _slef.jsPlumbJson[num].taskID,
 						"icon_ID": _slef.jsPlumbJson[num].ID,//节点IconID
-						"icon_left" : e.clientX - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX,
-						"icon_top" : e.clientY - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY
+						"icon_left" : e.clientX - $(_slef.jsPlumbBox).offset().left - _slef.mousedownClient.mousedownX + $(_slef.jsPlumbBox).scrollLeft(),
+						"icon_top" : e.clientY - $(_slef.jsPlumbBox).offset().top - _slef.mousedownClient.mousedownY + $(_slef.jsPlumbBox).scrollTop()
 					}
 					if(_slef.mousedownClient.left == $(this).css("left") && _slef.mousedownClient.top == $(this).css("top")){
 						//节点Icon没有位移不做处理
